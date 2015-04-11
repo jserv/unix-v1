@@ -9,8 +9,7 @@ Unless otherwise noted, file and directory names refer to this repository.
 1. Download the source code for the SIMH simulator from here:
    <http://simh.trailing-edge.com/>
    Or try the [development repository](https://github.com/simh/simh).
-    Make sure that you download version 3.8-0 or later; earlier versions need
-    patches to work.
+    Make sure that you download version 3.8-0 or later.
 
 2. Unpack SIMH somewhere. Make the `BIN/` directory in [SIMH](http://simh.trailing-edge.com/)
    at the top level. Do `make pdp11` to make the pdp11 simulator in the `BIN/`
@@ -104,8 +103,6 @@ Repository Layout
     - build area: patched kernel files, patched filesystems
 * `images/`
     - final disk and tape images to be used by the SIMH simulator
-* `misc/`
-    - misc. files, e.g. the SIMH patch for KE11A support
 * `notes/`
     - notes on the work done to get 1e UNIX to run again
 * `diffs/`
