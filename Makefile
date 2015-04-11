@@ -1,12 +1,10 @@
+all:
+	$(MAKE) -C tools
+	$(MAKE) -C build install
 
-all :
-	(cd tools; make)
-	(cd build; make install)
+clean:
+	$(MAKE) -C build clean
 
-clean :
-	(cd build; make clean)
-
-clobber : clean
-	(cd tools; make clean)
-	(cd build; make clobber)
-
+distclean: clean
+	$(MAKE) -C tools clean
+	$(MAKE) -C build distclean

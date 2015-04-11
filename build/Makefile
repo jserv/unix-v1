@@ -7,7 +7,7 @@
 #	tape		- make a tape image for a "cold" kernel
 #	unix		- make the kernel
 #	clean		- delete intermediate files
-#	clobber		- delete all generated files
+#	distclean	- delete all generated files
 #
 # settings:
 #	EXTRAPATCHES - list of extra patches to apply
@@ -156,7 +156,7 @@ clean :
 	rm -f images
 
 # clean intermediate and target files
-clobber : clean
+distclean : clean
 	rm -f tape
 	rm -f rf0.dsk rk0.dsk
 

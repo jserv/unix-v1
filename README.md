@@ -24,7 +24,7 @@ Unless otherwise noted, file and directory names refer to this repository.
    image which is installed into the images directory.  Finally, the make will
    build the `rf0.dsk`, `rk0.dsk` and `tape` images and install these in the
    `images` directory. You can also do a `make clean` to clean out the `images/`
-   and `build/` directories. A `make clobber` will clean out the `images/`,
+   and `build/` directories. A `make distclean` will clean out the `images/`,
    `build/`  and `tools/` directories.
 
 Running 1st Edition UNIX
