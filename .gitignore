@@ -1,5 +1,16 @@
 # intermediate files
-build/!Makefile
+build/*.s
+build/*.dsk
+build/*.clean
+build/*.orig
+build/*.0405
+build/cleansrc
+build/patched
+build/protofs
+build/root/
+build/unix
+build/usr/
+build/usyms
 
 # installed images
 images
