@@ -1,0 +1,11 @@
+# intermediate files
+build/!Makefile
+
+# installed images
+images
+
+# tools
+tools/apout/apout
+tools/mkfs
+tools/ml
+tools/pdp11
