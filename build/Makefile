@@ -122,6 +122,8 @@ root usr protofs : $(ALLSRCS) init.0405 sh.0405
 	@cp $(KSRCS) usr/sys
 	@cp init.0405 root/etc/init
 	@cp sh.0405 root/bin/sh
+	@$(AS) usr/src/lib/crt0.s
+	@mv -f a.out usr/lib/crt0.o
 	@touch protofs
 
 # build filesystem images
