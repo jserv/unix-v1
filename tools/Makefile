@@ -7,8 +7,8 @@ mkfs: mkfs.c
 ml: ml.c
 
 apout/apout:
-	(cd apout; make; rm *.o)
+	($(MAKE) -C apout; rm -f apout/*.o)
 
 clean:
 	rm -f mkfs ml
-	(cd apout; make clean)
+	$(MAKE) -C apout clean
