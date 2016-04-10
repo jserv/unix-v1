@@ -65,7 +65,7 @@ total    6
 Documentation
 -------------
 The manuals for 1st Edition UNIX are available here:
-<http://www.cs.bell-labs.com/who/dmr/1stEdman.html>,
+<https://www.bell-labs.com/usr/dmr/www/1stEdman.html>,
 <http://www.bitsavers.org/pdf/bellLabs/unix/UNIX_ProgrammersManual_Nov71.pdf>, and
 <http://man.cat-v.org/unix-1st/>.
 
@@ -79,7 +79,7 @@ Details of the PDP-11/20 architecture and its peripherals can be found at:
 The C compiler from 2nd Edition UNIX is also installed and works, but the
 language is a very early dialect of C. The closest reference to the language
 at this point in time is this, but it is probably 2 years too late:
-<http://cm.bell-labs.com/cm/cs/who/dmr/cman74.pdf>
+<https://www.bell-labs.com/usr/dmr/www/cman74.pdf>
 
 The userland binaries come from a period somewhere between the 1st and 2nd
 Edition of UNIX. You may find the 2e manuals useful too:

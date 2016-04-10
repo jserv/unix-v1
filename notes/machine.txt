@@ -128,12 +128,12 @@ hardware at all. "
 Digital in Maynard to talk about it; in particular, we had the specs 
 for the floating-point instructions it supported. So the system 
 described here included a simulator for the instructions (fptrap(III))."
-   - http://www.cs.bell-labs.com/who/dmr/1stEdman.html
+   - https://www.bell-labs.com/usr/dmr/www/1stEdman.html
      (describing nov 3, 1971 manuals)
 
 -------------------------------------
 section VII pg 5 has "boot procedures" section:
-http://cm.bell-labs.com/cm/cs/who/dmr/man71.pdf
+https://www.bell-labs.com/usr/dmr/www/man71.pdf
 
 ------------------------------------
 http://en.wikipedia.org/wiki/PDP-11#PDP-11_instruction_repertoire

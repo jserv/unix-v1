@@ -1,5 +1,5 @@
 This directory contains the last1120c C compiler, as described by Dennis
-Ritchie on his web page http://cm.bell-labs.com/cm/cs/who/dmr/primevalC.html
+Ritchie on his web page https://www.bell-labs.com/usr/dmr/www/primevalC.html
 
 You can use the Apout emulator and the C compiler from the s2 tape to
 recompile the last1120c compiler. After installing the new compiler
