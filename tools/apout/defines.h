@@ -113,7 +113,7 @@ typedef unsigned long u_int32_t;
 #define NFILE   40		/* Number of file pointers we can buffer */
 #define ValidFD(x) ((x>=0) && (x<NFILE))
 				/* Used for opening on directories */
-#define TMP_PLATE       "/usr/tmp/apout_dir.XXXXXX"
+#define TMP_PLATE       "/tmp/apout_dir.XXXXXX"
 
 
 /* Set up prototype macro for 
