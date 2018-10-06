@@ -105,6 +105,3 @@ Repository Layout
     - final disk and tape images to be used by the SIMH simulator
 * `notes/`
     - notes on the work done to get 1e UNIX to run again
-* `diffs/`
-    - Differences between `pages/*` and the high quality OCR
-    - done by James Markevitch.  Includes headers and footers.
