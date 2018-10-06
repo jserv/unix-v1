@@ -220,12 +220,12 @@ void ash() {
 
 union s_u_word {
     u_int16_t u_word;
-    short s_word;
+    int16_t s_word;
 };
 
 union s_u_long {
     u_int32_t u_long;
-    long s_long;
+    int32_t s_long;
 };
 
 void mul() {
@@ -237,7 +237,7 @@ void mul() {
     load_dst();
     data2.u_word=dstword;
 
-    tmp.s_long = ((long) data1.s_word) * ((long) data2.s_word);
+    tmp.s_long = ((int32_t) data1.s_word) * ((int32_t) data2.s_word);
 
     regs[SRC_REG] = (u_int16_t)(tmp.u_long >> 16);
     regs[(SRC_REG) | 1] = (u_int16_t)(tmp.u_long & 0177777);
