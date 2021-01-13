@@ -12,7 +12,7 @@ CC=gcc
 #
 # These flags for doing debugging
 CFLAGS= -Wall -g -DEMU211 -DEMUV1 -DNATIVES -DRUN_V1_RAW \
-	-DDEBUG -DZERO_MEMORY -DWRITEBASE -fcommon
+	-DDEBUG -DZERO_MEMORY -DWRITEBASE
 LDFLAGS= -g
 
 # These flags for speed
