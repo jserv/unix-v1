@@ -13,6 +13,7 @@ metadata:
     name : variable length
 """
 
+from __future__ import print_function
 import os, re, sys
 from struct import pack
 
@@ -120,17 +121,17 @@ noisy = 0
 
 def uMode(s) :
     m = 0
-    if s[0] == 'u' : m |= 040 | 020
-    if s[0] == 'x' : m |= 020
-    if s[1] == 'r' : m |= 010
-    if s[2] == 'w' : m |= 004
-    if s[3] == 'r' : m |= 002
-    if s[4] == '2' : m |= 001
+    if s[0] == 'u' : m |= 0o40 | 0o20
+    if s[0] == 'x' : m |= 0o20
+    if s[1] == 'r' : m |= 0o10
+    if s[2] == 'w' : m |= 0o04
+    if s[3] == 'r' : m |= 0o02
+    if s[4] == '2' : m |= 0o01
     return m
 
 # preprocess the perms table to form perm :: path -> (mode, uid)
 ps = re.sub("[ \t]+", " ", rawperms)
-ps = filter(None, ps.split("\n"))
+ps = [_f for _f in ps.split("\n") if _f]
 ps = [p.split(' ') for p in ps]
 perms = dict((p[7], (uMode(p[0]), int(p[1]))) for p in ps)
 
@@ -142,17 +143,17 @@ def pad(d) :
 
 def sMode(m) :
     return (
-        ("-","s")[(m & 040) != 0] +
-        ("-","x")[(m & 020) != 0] +
-        ("-","r")[(m & 010) != 0] +
-        ("-","w")[(m & 004) != 0] +
-        ("-","r")[(m & 002) != 0] +
-        ("-","w")[(m & 001) != 0] )
+        ("-","s")[(m & 0o40) != 0] +
+        ("-","x")[(m & 0o20) != 0] +
+        ("-","r")[(m & 0o10) != 0] +
+        ("-","w")[(m & 0o04) != 0] +
+        ("-","r")[(m & 0o02) != 0] +
+        ("-","w")[(m & 0o01) != 0] )
 
 def wrFile(out, fn, d, mode, uid) :
     "write out file."
     if noisy :
-        print sMode(mode), uid, fn
+        print(sMode(mode), uid, fn)
     meta = pack("<HBB", len(d), mode, uid) + fn
     out.write(pad(meta))
     out.write(pad(d))
@@ -170,13 +171,13 @@ def copyFile(root, out, fn) :
         fn = fn[len(root):]
     # get the perm from the table, if not present, just make it
     # uid=1 mode = 37.
-    mode,uid = perms.get(fn, (037, 1))
-    if not fn in perms : print "making up mode"
+    mode,uid = perms.get(fn, (0o37, 1))
+    if not fn in perms : print("making up mode")
     wrFile(out, fn, d, mode, uid)
 
 def main() :
     if len(sys.argv) < 2 :
-        print "usage: %s root files" % sys.argv[0]
+        print("usage: %s root files" % sys.argv[0])
         raise SystemExit(1)
     root = sys.argv[1]
     files = sys.argv[2:]
