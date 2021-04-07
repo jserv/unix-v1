@@ -79,8 +79,6 @@ Edition of UNIX. You may find the 2e manuals useful too:
 ## Repository Layout
 * `pages/`
     - OCR'd pages from the PreliminaryUnixImplementation document
-* `rebuilt/`
-    - kernel source rebuilt from the OCR'd pages, as asm files
 * `patches/`
     - patches to rebuilt/ files to get kernel to run
 * `fs/`
