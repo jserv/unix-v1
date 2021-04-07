@@ -6,32 +6,24 @@ Build Instructions
 ------------------
 Unless otherwise noted, file and directory names refer to this repository.
 
-1. Download the source code for the SIMH simulator from here:
-   <http://simh.trailing-edge.com/>
-   Or try the [development repository](https://github.com/simh/simh).
-    Make sure that you download version 3.8-0 or later.
+Simply execute `make`. This will do several things.  It will build `tools/pdp11`,
+`tools/mkfs`, `tools/ml` and `tools/apout/apout`. These tools are required to
+build the filesystems for 1e UNIX, and the kernel. It will create kernel
+sources with some necessary patches, assemble the kernel and build a bootable
+[SIMH](http://simh.trailing-edge.com/) memory image which is installed into the
+images directory.
 
-2. Unpack SIMH somewhere. Make the `BIN/` directory in [SIMH](http://simh.trailing-edge.com/)
-   at the top level. Do `make pdp11` to make the pdp11 simulator in the `BIN/`
-   directory. Copy the `BIN/pdp11` executable into the `tools/` directory.
-
-3. Return to the 1st Edition top-level directory. Do a `make`. This will do
-   several things.  It will build `tools/mkfs`, `tools/ml` and `tools/apout/apout`.
-   These tools are required to build the filesystems for 1e UNIX, and the
-   kernel. It will create kernel sources with some necessary patches, assemble
-   the kernel and build a bootable [SIMH](http://simh.trailing-edge.com/) memory
-   image which is installed into the images directory.  Finally, the make will
-   build the `rf0.dsk`, `rk0.dsk` and `tape` images and install these in the
-   `images` directory. You can also do a `make clean` to clean out the `images/`
-   and `build/` directories. A `make distclean` will clean out the `images/`,
-   `build/`  and `tools/` directories.
+Finally, the `make` will build the `rf0.dsk`, `rk0.dsk` and `tape` images and
+install these in the `images` directory. You can also do a `make clean` to clean
+out the `images/` and `build/` directories. A `make distclean` will clean out the
+`images/`, `build/`  and `tools/` directories accordingly.
 
 Running 1st Edition UNIX
 ------------------------
-1. Run `tools/pdp11 simh.cfg`, and you should see this:
+1. Execute `make run`, and you should see this:
 
 ```
-PDP-11 simulator V4.0-0 Beta        git commit id: a7d0b0e3
+PDP-11 simulator V4.0-0 Current        git commit id: fc5bda90
 Disabling XQ
 RF: buffering file in memory
 TC0: 16b format, buffering file in memory
@@ -40,7 +32,7 @@ Listening on port 5555
 
    You will receive a `login:` prompt:
 
-2. Type in root followed by <RETURN>. You should receive a `#` prompt.
+2. Type in root followed by RETURN key. You should receive a `#` prompt.
 
 3. Type in an `ls -l` command. You should see something like this:
 

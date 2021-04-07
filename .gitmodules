@@ -1,0 +1,3 @@
+[submodule "tools/simh"]
+	path = tools/simh
+	url = https://github.com/simh/simh

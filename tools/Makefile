@@ -1,6 +1,13 @@
 CFLAGS=-g -Wall
 
-all: mkfs ml apout/apout
+all: pdp11 mkfs ml apout/apout
+
+pdp11: simh/makefile
+	$(MAKE) -C simh pdp11
+	ln -s simh/BIN/pdp11 .
+
+simh/makefile:
+	git submodule update --init
 
 mkfs: mkfs.c
 
@@ -10,5 +17,7 @@ apout/apout:
 	($(MAKE) -C apout; rm -f apout/*.o)
 
 clean:
+	rm -f pdp11
+	$(MAKE) -C simh clean
 	rm -f mkfs ml
 	$(MAKE) -C apout clean
