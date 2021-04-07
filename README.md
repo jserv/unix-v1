@@ -1,9 +1,10 @@
+# Restoration of 1st Edition UNIX from Bell Laboratories
+
 Welcome to the 1st Edition UNIX repository. Here you will find the kernel
 source code and userland binaries which will allow you to run 1e UNIX on
 a PDP-11 simulator.
 
-Build Instructions
-------------------
+## Build Instructions
 Unless otherwise noted, file and directory names refer to this repository.
 
 Simply execute `make`. This will do several things.  It will build `tools/pdp11`,
@@ -18,8 +19,7 @@ install these in the `images` directory. You can also do a `make clean` to clean
 out the `images/` and `build/` directories. A `make distclean` will clean out the
 `images/`, `build/`  and `tools/` directories accordingly.
 
-Running 1st Edition UNIX
-------------------------
+## Running 1st Edition UNIX
 1. Execute `make run`, and you should see this:
 
 ```
@@ -54,8 +54,7 @@ total    6
 6. To shut the system down, press `Ctrl-E` to stop the simulator, and `q` to quit.
    You do not need to sync the system before shutdown.
 
-Documentation
--------------
+## Documentation
 The manuals for 1st Edition UNIX are available here:
 <https://www.bell-labs.com/usr/dmr/www/1stEdman.html>,
 <http://www.bitsavers.org/pdf/bellLabs/unix/UNIX_ProgrammersManual_Nov71.pdf>, and
@@ -77,8 +76,7 @@ The userland binaries come from a period somewhere between the 1st and 2nd
 Edition of UNIX. You may find the 2e manuals useful too:
 <http://www.bitsavers.org/pdf/bellLabs/unix/Unix_2nd_Edition_Manual_Jun72.pdf>.
 
-Repository Layout
------------------
+## Repository Layout
 * `pages/`
     - OCR'd pages from the PreliminaryUnixImplementation document
 * `rebuilt/`
