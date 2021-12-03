@@ -93,3 +93,10 @@ Edition of UNIX. You may find the 2e manuals useful too:
     - final disk and tape images to be used by the SIMH simulator
 * `notes/`
     - notes on the work done to get 1e UNIX to run again
+
+## Related Projects
+* [pdp7-unix](https://github.com/DoctorWkt/pdp7-unix) resurrects Unix on the PDP-7 from scans of the original assembly code.
+* [The Unix Heritage Society](https://www.tuhs.org/)
+* [Unix History Repository](https://github.com/dspinellis/unix-history-repo)
+* [Warner's History of Unix BSDCan 2020 Talk](https://github.com/bsdimp/bsdcan2020-demos)
+* [Research UNIX v7 for Raspberry Pi](https://github.com/r1mikey/research-unix-v7)
