@@ -17,6 +17,7 @@ images
 
 # tools
 tools/apout/apout
+tools/apout/*.o
 tools/mkfs
 tools/ml
 tools/pdp11
