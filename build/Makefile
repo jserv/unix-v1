@@ -105,7 +105,7 @@ $(ALLSRCS) patched : $(CLEANSRCS)
 unix usyms : $(KSRCS)
 	@echo Building kernel...
 	@$(AS) u?.s
-	@$(NM) a.out | sort > usyms
+	@$(NM) a.out | LC_ALL=C sort > usyms
 	@mv a.out unix
 
 # build a prototype filesystems
