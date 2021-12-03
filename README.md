@@ -32,7 +32,7 @@ Listening on port 5555
 
    You will receive a `login:` prompt:
 
-2. Type in root followed by RETURN key. You should receive a `#` prompt.
+2. Type in `root` followed by RETURN key. You should receive a `#` prompt.
 
 3. Type in an `ls -l` command. You should see something like this:
 
@@ -45,7 +45,7 @@ total    6
  41 sdrwr-  7 root     70 Jan  1 00:00:00 usr
 ```
 
-4. To change directories, use chdir, e.g. `chdir /usr`. The only editor installed
+4. To change directories, use `chdir`, e.g. `chdir /usr`. The only editor installed
    is `ed`. You can find an ed tutorial in `notes/edtut.txt`.
 
 5. To log in multiple times, telnet to localhost port 5555.  The system
