@@ -32,9 +32,9 @@ void set_SR(void);
 /* are 16 bits and the SC and SR are 8 bits */
 
 int32_t MQ;				/* Multiply quotient */
-int32_t AC;				/* Accumulator */
-int32_t SC = 0;				/* Shift counter */
-int32_t SR;				/* Status register */
+static int32_t AC;				/* Accumulator */
+static int32_t SC = 0;				/* Shift counter */
+static int32_t SR;				/* Status register */
 
 
 /* Load a word from one of the KE11 registers */
