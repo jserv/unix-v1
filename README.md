@@ -100,3 +100,4 @@ Edition of UNIX. You may find the 2e manuals useful too:
 * [Unix History Repository](https://github.com/dspinellis/unix-history-repo)
 * [Warner's History of Unix BSDCan 2020 Talk](https://github.com/bsdimp/bsdcan2020-demos)
 * [Research UNIX v7 for Raspberry Pi](https://github.com/r1mikey/research-unix-v7)
+* [ed Editor V1 Javascript Edition](https://github.com/dkkloimwieder/eded.js)
