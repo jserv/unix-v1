@@ -46,7 +46,7 @@ total    6
 ```
 
 4. To change directories, use `chdir`, e.g. `chdir /usr`. The only editor installed
-   is `ed`. You can find an ed tutorial in `notes/edtut.txt`.
+   is `ed`. You can check [A Tutorial Introduction to the UNIX Text Editor](docs/edtut.pdf) for its usage.
 
 5. To log in multiple times, telnet to localhost port 5555.  The system
    is configured to allow 8 remote logins.
@@ -78,7 +78,7 @@ Edition of UNIX. You may find the 2e manuals useful too:
 
 ## Repository Layout
 * `pages/`
-    - OCR'd pages from the [Preliminary Release of UNIX Implementation Document](PreliminaryUnixImplementationDocument_Jun72.pdf).
+    - OCR'd pages from the [Preliminary Release of UNIX Implementation Document](docs/PreliminaryUnixImplementationDocument_Jun72.pdf).
 * `patches/`
     - patches to rebuilt/ files to get kernel to run
 * `fs/`
