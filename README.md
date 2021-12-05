@@ -101,3 +101,4 @@ Edition of UNIX. You may find the 2e manuals useful too:
 * [Warner's History of Unix BSDCan 2020 Talk](https://github.com/bsdimp/bsdcan2020-demos)
 * [Research UNIX v7 for Raspberry Pi](https://github.com/r1mikey/research-unix-v7)
 * [ed Editor V1 Javascript Edition](https://github.com/dkkloimwieder/eded.js)
+* [pdp11-B](https://github.com/rswier/pdp11-B)  is an effort to recreate the B compiler for the PDP-11 as authentically as possible.
