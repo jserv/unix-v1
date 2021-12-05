@@ -20,7 +20,7 @@ out the `images/` and `build/` directories. A `make distclean` will clean out th
 `images/`, `build/`  and `tools/` directories accordingly.
 
 ## Running 1st Edition UNIX
-1. Execute `make run`, and you should see this:
+1. Execute `make run` or `./simh.cfg`, and you should see this:
 
 ```
 PDP-11 simulator V4.0-0 Current        git commit id: fc5bda90
