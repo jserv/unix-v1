@@ -78,7 +78,7 @@ Edition of UNIX. You may find the 2e manuals useful too:
 
 ## Repository Layout
 * `pages/`
-    - OCR'd pages from the PreliminaryUnixImplementation document
+    - OCR'd pages from the [Preliminary Release of UNIX Implementation Document](PreliminaryUnixImplementationDocument_Jun72.pdf).
 * `patches/`
     - patches to rebuilt/ files to get kernel to run
 * `fs/`
