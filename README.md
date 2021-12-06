@@ -2,7 +2,9 @@
 
 Welcome to the 1st Edition UNIX repository. Here you will find the kernel
 source code and userland binaries which will allow you to run 1e UNIX on
-a PDP-11 simulator.
+a PDP-11 simulator. It is a reconstructed UNIX as it was around 1972 instead
+of a true 1e UNIX image. There was a printout of the slightly post V1 kernel.
+And there was data recovered from DECtape from around V2 or V3.
 
 The early versions of UNIX were epitomes of sophisticated concepts packaged
 into elegant systems. UNIX' influence has been so powerful that it reverberates
