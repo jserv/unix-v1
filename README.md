@@ -105,6 +105,7 @@ Edition of UNIX. You may find the 2e manuals useful too:
     - notes on the work done to get 1e UNIX to run again
 
 ## Related Projects
+* [7th Edition Unix at 40](https://2019.eurobsdcon.org/slides/7th%20Edition%20Unix%20at%2040%20-%20Warner%20Losh.pdf) / [video](https://youtu.be/FTlzaDgzPY8)
 * [pdp7-unix](https://github.com/DoctorWkt/pdp7-unix) resurrects Unix on the PDP-7 from scans of the original assembly code.
 * [The Unix Heritage Society](https://www.tuhs.org/)
 * [Unix History Repository](https://github.com/dspinellis/unix-history-repo)
