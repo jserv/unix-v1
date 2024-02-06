@@ -1,30 +1,38 @@
 # Restoration of 1st Edition UNIX from Bell Laboratories
 
-Welcome to the 1st Edition UNIX repository. Here you will find the kernel
-source code and userland binaries which will allow you to run 1e UNIX on
-a PDP-11 simulator. It is a reconstructed UNIX as it was around 1972 instead
-of a true 1e UNIX image. There was a printout of the slightly post V1 kernel.
-And there was data recovered from DECtape from around V2 or V3.
+Welcome to the 1st Edition UNIX repository. Here, you will find the kernel
+source code and userland binaries necessary to run 1st Edition UNIX on a
+PDP-11 simulator. This repository houses a reconstructed version of UNIX as
+it existed around 1972, rather than an original 1st Edition UNIX image.
+The reconstruction is based on a printout of the UNIX kernel slightly after
+Version 1, supplemented with data recovered from a DECtape dating from around
+Versions 2 or 3.
 
-The early versions of UNIX were epitomes of sophisticated concepts packaged
-into elegant systems. UNIX' influence has been so powerful that it reverberates
-down to affect us in the 21st century. The history of the development of UNIX
-has been well documented, and over the past decade or so, efforts have been
-made to find and conserve the software and documentation artifacts from the
-earliest period of UNIX history.
-The paper [The Restoration of Early UNIX Artifacts](https://www.usenix.org/legacy/event/usenix09/tech/full_papers/toomey/toomey.pdf)
-written by Warren Toomey details the work that has been done to restore the
-artifacts from this time to working order and the lessons learned from this work.
+The 1st Edition UNIX marked a significant milestone when UNIX was rewritten
+for the then-new PDP-11, a relatively affordable minicomputer, transitioning
+from the PDP-7 for which it was originally developed, at Bell Laboratories.
+Both versions were crafted in assembly language. The early iterations of UNIX
+were quintessential examples of advanced concepts encapsulated within
+streamlined systems. The influence of UNIX has been so profound that its
+impact resonates well into the 21st century. The developmental history of UNIX
+is well-documented, and in the past decade, concerted efforts have been made
+to locate and preserve software and documentation artifacts from UNIX's
+formative years.
+
+The paper titled "[The Restoration of Early UNIX Artifacts](https://www.usenix.org/legacy/event/usenix09/tech/full_papers/toomey/toomey.pdf)"
+by Warren Toomey provides an in-depth account of the endeavors to restore
+these historical artifacts to operational condition, along with the valuable
+insights gained through this process.
 
 ## Build Instructions
 Unless otherwise noted, file and directory names refer to this repository.
 
-Simply execute `make`. This will do several things.  It will build `tools/pdp11`,
-`tools/mkfs`, `tools/ml` and `tools/apout/apout`. These tools are required to
-build the filesystems for 1e UNIX, and the kernel. It will create kernel
-sources with some necessary patches, assemble the kernel and build a bootable
-[SIMH](http://simh.trailing-edge.com/) memory image which is installed into the
-images directory.
+Simply execute `make`. Doing so initiates several processes. It compiles
+`tools/pdp11`, `tools/mkfs`, `tools/ml`, and `tools/apout/apout`. These tools
+are essential for constructing the filesystems and the kernel for 1st Edition
+UNIX. Additionally, the command prepares kernel sources with requisite patches,
+assembles the kernel, and creates a bootable [SIMH](http://simh.trailing-edge.com/)
+memory image. This image is then placed into the images directory.
 
 Finally, the `make` will build the `rf0.dsk`, `rk0.dsk` and `tape` images and
 install these in the `images` directory. You can also do a `make clean` to clean
@@ -79,13 +87,14 @@ Details of the PDP-11/20 architecture and its peripherals can be found at:
 <http://www.bitsavers.org/pdf/dec/pdp11/handbooks/PDP1120_Handbook_1972.pdf>, and
 <http://www.bitsavers.org/pdf/dec/pdp11/handbooks/PDP11_PeripheralsHbk_1972.pdf>.
 
-The C compiler from 2nd Edition UNIX is also installed and works, but the
-language is a very early dialect of C. The closest reference to the language
-at this point in time is this, but it is probably 2 years too late:
+The C compiler from 2nd Edition UNIX has been installed and is operational.
+However, it supports a very early dialect of C. The most relevant reference for
+this version of the language is as follows, although it may be approximately
+two years more advanced than the dialect in question:
 <https://www.bell-labs.com/usr/dmr/www/cman74.pdf>
 
-The userland binaries come from a period somewhere between the 1st and 2nd
-Edition of UNIX. You may find the 2e manuals useful too:
+The userland binaries originate from a period between the 1st and 2nd Editions
+of UNIX. The manuals from the 2nd Edition may also be useful:
 <http://www.bitsavers.org/pdf/att/unix/Early_UNIX/Unix_2nd_Edition_Manual_Jun72.pdf>.
 
 ## Repository Layout
