@@ -123,7 +123,8 @@ BSD-style license. Consequently, any work derived from Unix V1, as well as
 portions of V2 and V3, falls under this same BSD-style licensing.
 
 Use of this repository is governed by a BSD-style license that can be found in
-the [LICENSE](LICENSE) file.
+the [LICENSE](LICENSE) file. Apout is redistributed under the MIT License,
+which can be found in the [LICENSE.Apout](LICENSE.Apout) file.
 
 Check the [CREDITS](CREDITS) file to see who participated in the restoration.
 
