@@ -43,7 +43,7 @@ out the `images` and `build` directories. A `make distclean` will clean out the
 1. Execute `make run` or `./simh.cfg`, and you should see this:
 
 ```
-PDP-11 simulator V4.0-0 Current        git commit id: fc5bda90
+PDP-11 simulator Open SIMH V4.1-0 Current        git commit id: 1a1396d0
 Disabling XQ
 RF: buffering file in memory
 TC0: 16b format, buffering file in memory

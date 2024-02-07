@@ -3,7 +3,7 @@ CFLAGS=-g -Wall
 all: pdp11 mkfs ml apout/apout
 
 pdp11: simh/makefile
-	$(MAKE) -C simh pdp11
+	$(MAKE) -C simh NOVIDEO=1 pdp11
 	ln -sf simh/BIN/pdp11 .
 
 simh/makefile:
