@@ -21,8 +21,8 @@
 #define NUMDIRECTBLKS 8     /* Only 8 direct blocks in an i-node */
 #define BLKSPERINDIRECT 256 /* 256 block pointers in an indirect block */
 
-/* V1 UNIX reserves 64 blocks on the end of RF11 for kernel images, then
- * SWPSIZ blocks per process for swap areas.
+/* V1 UNIX reserves 64 blocks on the end of RF11 for kernel images, then SWPSIZ
+ * blocks per process for swap areas.
  */
 #define KERNBLKS 64 /* Hard coded in V1 kernel source */
 #define SWPSIZ 33   /* Was hard-coded to 17, now 33 for C compiler */
@@ -112,7 +112,7 @@ void write_superblock(void)
 /* Mark block n as being used */
 void block_inuse(int n)
 {
-    int bitmap[8] = {254, 253, 251, 247, 239, 223, 191, 127};
+    const int bitmap[8] = {254, 253, 251, 247, 239, 223, 191, 127};
     int offset, bitmask;
 
     if (n >= disksize) {
@@ -128,7 +128,7 @@ void block_inuse(int n)
 /* Mark i-node n as being in-use */
 void inode_inuse(int n)
 {
-    int bitmap[8] = {1, 2, 4, 8, 16, 32, 64, 128};
+    const int bitmap[8] = {1, 2, 4, 8, 16, 32, 64, 128};
     int offset, bitmask;
 
     if (n >= icount) {
@@ -148,7 +148,7 @@ int alloc_inode(void)
     for (int i = 42; i < icount; i++) {
         if (inodelist[i].flags == 0) {
             inode_inuse(i);
-            return (i);
+            return i;
         }
     }
 
@@ -161,17 +161,17 @@ int alloc_inode(void)
  */
 uint16_t alloc_blocks(int n)
 {
-    uint16_t i, firstblock = nextfreeblock;
+    uint16_t firstblock = nextfreeblock;
 
     if (nextfreeblock + n >= disksize) {
         printf("Unable to allocate %d more blocks\n", n);
         exit(1);
     }
 
-    for (i = nextfreeblock; i < n + nextfreeblock; i++)
+    for (uint16_t i = nextfreeblock; i < n + nextfreeblock; i++)
         block_inuse(i);
     nextfreeblock += n;
-    return (firstblock);
+    return firstblock;
 }
 
 /* Allocate N contiguous blocks, and write a single indirect block with those
@@ -182,7 +182,6 @@ int alloc_indirect_blocks(int n)
 {
     uint16_t blkptr[BLKSPERINDIRECT]; /* Blk pointers in the indirect blk */
     uint16_t indirect_blknum;         /* Number of the indirect block */
-    uint16_t i, b;
 
     if (n > BLKSPERINDIRECT) {
         printf("Unable to allocate more than %d blocks in indirect\n", n);
@@ -194,7 +193,7 @@ int alloc_indirect_blocks(int n)
 
     /* Fill the indirect block with the block numbers */
     memset(blkptr, 0, BLKSIZE);
-    for (i = 0, b = indirect_blknum + 1; i < n; i++, b++)
+    for (int i = 0, b = indirect_blknum + 1; i < n; i++, b++)
         blkptr[i] = b;
 
     /* Write the indirect bock out to the image */
@@ -202,23 +201,23 @@ int alloc_indirect_blocks(int n)
     fwrite(blkptr, BLKSIZE, 1, diskfh);
 
     /* Return the indirect block number */
-    return (indirect_blknum);
+    return indirect_blknum;
 }
 
 /* Add a filename and i-number to the given directory */
-void add_direntry(struct directory *d, uint16_t inum, char *name)
+void add_direntry(struct directory *d, uint16_t inum, const char *name)
 {
-    if (d == NULL) {
+    if (!d) {
         printf("I need a struct directory * please\n");
         exit(1);
     }
 
 #if 0
-  /* Removed for /dev/creation */
-  if (inum < ROOTDIR_INUM) {
-    printf("Illegal inum %d in add_direntry\n", inum);
-    exit(1);
-  }
+    /* Removed for /dev/creation */
+    if (inum < ROOTDIR_INUM) {
+        printf("Illegal inum %d in add_direntry\n", inum);
+        exit(1);
+    }
 #endif
 
     if (name && strlen(name) > 8) {
@@ -240,33 +239,27 @@ void add_direntry(struct directory *d, uint16_t inum, char *name)
 /* Search for an return a struct fileperm pointer, given a directory and
  * filename. If no match is found, NULL is returned.
  */
-struct fileperm *search_fileperm(char *dir, char *file)
+struct fileperm *search_fileperm(const char *dir, const char *file)
 {
     char name[BLKSIZE];
-
     snprintf(name, BLKSIZE, "%s/%s", dir, file);
 
     for (int i = 0; permlist[i].name; i++) {
-        if (!strcmp(permlist[i].name, name)) {
-            return (&permlist[i]);
-        }
+        if (!strcmp(permlist[i].name, name))
+            return &permlist[i];
     }
 
-    return (NULL);
+    return NULL;
 }
 
 /* Create a directory with the given name. Allocate an i-node for it, and a
  * set of blocks. Attach it to the parent directory. Return the struct
  * allocated. If name is "/", we are making the root directory itself.
  */
-struct directory *create_dir(char *name,
+struct directory *create_dir(const char *name,
                              int numblocks,
                              struct directory *parent)
 {
-    struct directory *d;
-    uint16_t inum, parent_inum, blk;
-    int i;
-
     if (numblocks > 8) {
         printf("Can't allocate >8 blocks per directory\n");
         exit(1);
@@ -281,14 +274,17 @@ struct directory *create_dir(char *name,
     if (!strcmp(name, "/"))
         numblocks = 1;
 
-    d = (struct directory *) calloc(1, sizeof(struct directory));
+    struct directory *d =
+        (struct directory *) calloc(1, sizeof(struct directory));
     d->numentries = numblocks * DIRENTPERBLOCK;
     d->nextfree = 0;
     d->entry =
         (struct v1dirent *) calloc(d->numentries, sizeof(struct v1dirent));
 
-    /* If the root directory, use the special i-number for it */
-    /* Otherwise, allocate an i-node and some blocks for the directory */
+    /* If the root directory, use the special i-number for it.
+     * Otherwise, allocate an i-node and some blocks for the directory.
+     */
+    uint16_t inum;
     if (!strcmp(name, "/")) {
         inum = ROOTDIR_INUM;
         rootdir = parent = d; /* So later, root's .. points to itself */
@@ -301,11 +297,13 @@ struct directory *create_dir(char *name,
     /* Mark the i-node as a directory */
     inodelist[inum].flags |= I_DIR | I_UREAD | I_UWRITE | I_OREAD;
     inodelist[inum].nlinks = 2; /* Size is determined at write-time */
+    uint16_t blk;
+    int i;
     for (i = 0, blk = d->block; i < numblocks; i++, blk++)
         inodelist[inum].block[i] = blk;
 
     /* Attach this directory to its parent, but not if root */
-    parent_inum = parent->inum;
+    uint16_t parent_inum = parent->inum;
     if (strcmp(name, "/")) {
         add_direntry(parent, inum, name);
         /* Update the parent's nlinks */
@@ -316,13 +314,13 @@ struct directory *create_dir(char *name,
     add_direntry(d, parent_inum, "..");
     add_direntry(d, inum, ".");
 
-    return (d);
+    return d;
 }
 
 /* Write the directory out to image */
-void write_dir(struct directory *d, char *name)
+void write_dir(const struct directory *d)
 {
-    if (d == NULL) {
+    if (!d) {
         printf("I need a struct directory * please\n");
         exit(1);
     }
@@ -333,8 +331,7 @@ void write_dir(struct directory *d, char *name)
     fwrite(d->entry, d->numentries * sizeof(struct v1dirent), 1, diskfh);
 }
 
-/*
- * Following the cold UNIX rf output, make /dev. In /dev, make devices with
+/* Following the cold UNIX rf output, make /dev. In /dev, make devices with
  * specific i-nums, which I guess act like early major/minor device numbers.
  */
 void add_devdir(void)
@@ -342,7 +339,8 @@ void add_devdir(void)
     struct dev {
         char *name;
         uint16_t inum;
-    } devlist[] = {
+    };
+    const struct dev devlist[] = {
         {"tty", 1},   {"ppt", 2},   {"mem", 3},   {"rf0", 4},   {"rk0", 5},
         {"tap0", 6},  {"tap1", 7},  {"tap2", 8},  {"tap3", 9},  {"tap4", 10},
         {"tap5", 11}, {"tap6", 12}, {"tap7", 13}, {"tty0", 14}, {"tty1", 15},
@@ -350,50 +348,50 @@ void add_devdir(void)
         {"tty7", 21}, {"lpr", 22},  {"tty8", 1},  {NULL, 0},
     };
 
-    struct directory *d;
-    int i;
+    /* Cold UNIX only uses 1 block */
+    struct directory *d = create_dir("dev", 1, rootdir);
 
-    d = create_dir("dev", 1, rootdir); /* Cold UNIX only uses 1 block */
-
-    for (i = 0; devlist[i].name != NULL; i++) {
+    for (int i = 0; devlist[i].name; i++)
         add_direntry(d, devlist[i].inum, devlist[i].name);
-    }
 
     /* And write the directory out */
-    write_dir(d, "dev");
+    write_dir(d);
 }
 
-/* Create a file in a given directory. Returns the first block number. */
-/* Does not actually copy the file's bits onto the image. */
-/* At present we cannot deal with very large files, i.e. > 1 indirect block */
-int create_file(struct directory *d, char *name, int size, struct fileperm *p)
+/* Create a file in a given directory. Returns the first block number.
+ * Does not actually copy the file's bits onto the image.
+ * At present we cannot deal with very large files, i.e. > 1 indirect block
+ */
+int create_file(struct directory *d,
+                const char *name,
+                int size,
+                const struct fileperm *p)
 {
-    uint16_t inum;
     uint16_t firstblock;
     uint32_t epoch = 0;
-    int i, blk, numblocks;
 
-    if (d == NULL) {
+    if (!d) {
         printf("I need a struct directory * please\n");
         exit(1);
     }
 
-    if (name == NULL) {
+    if (!name) {
         printf("I need a filename please\n");
         exit(1);
     }
 
     if (size > BLKSPERINDIRECT * BLKSIZE) {
         printf("File %s is a very large file, skipping", name);
-        return (0);
+        return 0;
     }
 
     /* Allocate an i-node and some blocks for the directory */
-    inum = alloc_inode();
-    numblocks = (size + BLKSIZE - 1) / BLKSIZE;
+    uint16_t inum = alloc_inode();
+    int numblocks = (size + BLKSIZE - 1) / BLKSIZE;
 
-    /* Get either that many blocks, or an indirect block if a large file */
-    /* and put the list of blocks in the i-node */
+    /* Get either that many blocks, or an indirect block if a large file and
+     * put the list of blocks in the i-node.
+     */
     if (numblocks > NUMDIRECTBLKS) {
         firstblock = alloc_indirect_blocks(numblocks);
         inodelist[inum].flags |= I_LARGEFILE;
@@ -401,7 +399,7 @@ int create_file(struct directory *d, char *name, int size, struct fileperm *p)
         firstblock++; /* So that we return the 1st data block */
     } else {
         firstblock = alloc_blocks(numblocks);
-        for (i = 0, blk = firstblock; i < numblocks; i++, blk++)
+        for (int i = 0, blk = firstblock; i < numblocks; i++, blk++)
             inodelist[inum].block[i] = blk;
     }
 
@@ -409,8 +407,9 @@ int create_file(struct directory *d, char *name, int size, struct fileperm *p)
     inodelist[inum].nlinks = 1;
     inodelist[inum].size = size;
 
-    /* If we have existing permissions, use them. Otherwise, just */
-    /* make some default permissions and set uid to 0 */
+    /* If we have existing permissions, use them. Otherwise, just make some
+     * default permissions and set uid to 0.
+     */
     if (p) {
         inodelist[inum].uid = p->uid;
         memcpy(inodelist[inum].mtime, &p->mtime, sizeof(uint32_t));
@@ -426,23 +425,22 @@ int create_file(struct directory *d, char *name, int size, struct fileperm *p)
 
     /* Add the i-node and filename to the directory */
     add_direntry(d, inum, name);
-    return (firstblock);
+    return firstblock;
 }
 
 /* Open up the file given by the fullname, and copy size bytes into the image
  * starting at firstblock.
  */
-void copy_file(char *fullname, int firstblock, int size)
+void copy_file(const char *fullname, int firstblock)
 {
-    FILE *zin;
-    int cnt;
-
-    if ((zin = fopen(fullname, "r")) == NULL) {
+    FILE *zin = fopen(fullname, "r");
+    if (!zin) {
         printf("Unable to read %s to copy onto image\n", fullname);
         exit(1);
     }
 
     fseek(diskfh, firstblock * BLKSIZE, SEEK_SET);
+    int cnt;
     while ((cnt = fread(buf, 1, BLKSIZE, zin)) > 0)
         fwrite(buf, 1, cnt, diskfh);
 
@@ -453,16 +451,10 @@ void copy_file(char *fullname, int firstblock, int size)
 /* Make a directory /dir on the image. Add all the files in basedir/dir into
  * /dir on the image.
  */
-void add_files(char *basedir, char *dir, struct directory *parent)
+void add_files(const char *basedir, char *dir, struct directory *parent)
 {
-    struct directory *d;
-    DIR *D;
-    struct dirent *dp;
-    struct stat sb;
     char fullname[BLKSIZE];
-    uint16_t firstblock;
-    struct fileperm *perms;
-    char *noslashdir = dir;
+    const char *noslashdir = dir;
 
     /* If dir is /, trim it for later snprintfs */
     if (!strcmp(dir, "/"))
@@ -472,21 +464,22 @@ void add_files(char *basedir, char *dir, struct directory *parent)
     snprintf(fullname, BLKSIZE, "%s/%s", basedir, noslashdir);
 
     /* Open the external directory */
-    D = opendir(fullname);
-    if (D == NULL) {
+    DIR *D = opendir(fullname);
+    if (!D) {
         printf("Cannot opendir %s\n", fullname);
         exit(1);
     }
 
     /* Create the image directory */
-    d = create_dir(dir, DIRBLOCKS, parent);
+    struct directory *d = create_dir(dir, DIRBLOCKS, parent);
 
     /* Now create the /dev directory by hand */
     if (makedevflag && !strcmp(dir, "/"))
         add_devdir();
 
     /* Walk the directory */
-    while ((dp = readdir(D)) != NULL) {
+    struct dirent *dp;
+    while ((dp = readdir(D))) {
         if (!strcmp(dp->d_name, "."))
             continue; /* Skip . and .. */
         if (!strcmp(dp->d_name, ".."))
@@ -495,6 +488,7 @@ void add_files(char *basedir, char *dir, struct directory *parent)
         /* Stat the entry found */
         snprintf(fullname, BLKSIZE, "%s/%s/%s", basedir, noslashdir,
                  dp->d_name);
+        struct stat sb;
         if (stat(fullname, &sb) < 0) {
             printf("Cannot stat %s\n", fullname);
             continue;
@@ -524,17 +518,16 @@ void add_files(char *basedir, char *dir, struct directory *parent)
         }
 
         /* Search for any known permissions for this file */
-        perms = search_fileperm(dir, dp->d_name);
+        const struct fileperm *perms = search_fileperm(dir, dp->d_name);
 
-        /* Create the file's i-node */
-        /* and copy the file into the image */
-        firstblock = create_file(d, dp->d_name, sb.st_size, perms);
-        copy_file(fullname, firstblock, sb.st_size);
+        /* Create the file's i-node and copy the file into the image */
+        uint16_t firstblock = create_file(d, dp->d_name, sb.st_size, perms);
+        copy_file(fullname, firstblock);
     }
     closedir(D);
 
     /* And write the directory out */
-    write_dir(d, dir);
+    write_dir(d);
 }
 
 /* Open and parse the file to obtain a list of V1 file owner/perm/dates. The
@@ -549,21 +542,21 @@ void add_files(char *basedir, char *dir, struct directory *parent)
  * which begins the full pathname. Spaces separate the full pathname and the
  * timestamp which is in 1/60th of a second since the beginning of the year.
  */
-void read_permsfile(char *file)
+void read_permsfile(const char *file)
 {
-    FILE *zin;
     char linebuf[BLKSIZE];
-    char *cptr, *sptr;
     int posn = 0;
 
-    if (file == NULL)
+    if (!file)
         return;
-    if ((zin = fopen(file, "r")) == NULL)
+
+    FILE *zin = fopen(file, "r");
+    if (!zin)
         return;
 
     /* Find line beginning with = */
     while (1) {
-        if (fgets(linebuf, BLKSIZE - 1, zin) == NULL) {
+        if (!fgets(linebuf, BLKSIZE - 1, zin)) {
             fclose(zin);
             return;
         }
@@ -573,8 +566,7 @@ void read_permsfile(char *file)
 
     /* Now read and parse each line */
     while (1) {
-        if ((posn >= PERMLISTSIZE) ||
-            (fgets(linebuf, BLKSIZE - 1, zin) == NULL)) {
+        if ((posn >= PERMLISTSIZE) || (!fgets(linebuf, BLKSIZE - 1, zin))) {
             fclose(zin);
             return;
         }
@@ -601,17 +593,21 @@ void read_permsfile(char *file)
         permlist[posn].uid = strtol(&linebuf[5], NULL, 10);
 
         /* Search for the full pathname, skip line if not found */
-        if ((cptr = strchr(linebuf, '/')) == NULL)
+        char *cptr;
+        if (!(cptr = strchr(linebuf, '/')))
             continue;
 
-        /* Find the space after the full name, skip if not found */
-        /* Null-terminate the filename */
-        if ((sptr = strchr(cptr, ' ')) == NULL)
+        /* Find the space after the full name, skip if not found.
+         * Null-terminate the filename.
+         */
+        char *sptr;
+        if (!(sptr = strchr(cptr, ' ')))
             continue;
         *(sptr++) = '\0';
 
-        /* Copy the pathname minus the leading slash */
-        /* However, if it starts with "/usr/", skip "/usr/" */
+        /* Copy the pathname minus the leading slash.
+         * However, if it starts with "/usr/", skip "/usr/"
+         */
         if (!strncmp(cptr, "/usr/", 5))
             cptr += 5;
         else
@@ -639,11 +635,8 @@ void usage(void)
 
 int main(int argc, char *argv[])
 {
-    int i, ch;
-    int numiblocks;
-    int fs_size; /* Equal to disksize minus any swap */
-
     /* Get any optional arguments */
+    int ch;
     while ((ch = getopt(argc, argv, "dp:")) != -1) {
         switch (ch) {
         case 'p':
@@ -663,32 +656,31 @@ int main(int argc, char *argv[])
 
     /* Set the disk size */
     if (argv[2][1] == 'k') { /* RK device */
-        /* XXX: I can't seem to go past 4864 to 4872 blocks, and I haven't */
-        /* worked out why yet. */
+        /* XXX: I can't seem to go past 4864 to 4872 blocks, and I haven't
+         * worked out why yet.
+         */
         disksize = RK_SIZE;
-        fs_size = RK_SIZE;
     } else {
         disksize = RF_SIZE;
-        fs_size = RF_NOSWAPSIZE;
         makedevflag = 1;
     }
 
     /* Create the image */
     diskfh = fopen(argv[1], "w+");
-    if (diskfh == NULL) {
+    if (!diskfh) {
         printf("Unable to create image %s\n", argv[1]);
         exit(1);
     }
 
     /* Make the image full-sized */
-    for (i = 0; i < disksize; i++)
+    for (int i = 0; i < disksize; i++)
         fwrite(buf, BLKSIZE, 1, diskfh);
 
-    /* Create the free-map: fortunately RK_SIZE and RF_SIZE are divisible by 8
+    /* Create the free-map: fortunately RK_SIZE and RF_SIZE are divisible by 8.
+     * Make all the blocks free to start with.
      */
-    /* Make all the blocks free to start with */
-    freemap = (uint8_t *) malloc(disksize / 8);
-    for (i = 0; i < disksize / 8; i++)
+    freemap = malloc(disksize / 8);
+    for (int i = 0; i < disksize / 8; i++)
         freemap[i] = 0xff;
 
     /* Mark blocks 0 and 1 as in-use */
@@ -702,12 +694,12 @@ int main(int argc, char *argv[])
         icount = 8 * (disksize / INODE_RATIO / 8);
 
     /* Create the inode bitmap and inode list */
-    inodemap = (uint8_t *) calloc(1, (icount - ROOTDIR_INUM) / 8);
-    inodelist = (struct v1inode *) calloc(icount, sizeof(struct v1inode));
+    inodemap = calloc(1, (icount - ROOTDIR_INUM) / 8);
+    inodelist = calloc(icount, sizeof(struct v1inode));
 
     /* Mark special i-nodes 0 to ROOTDIR_INUM-1 as allocated */
     /* We follow the output of cold UNIX here. */
-    for (i = 0; i < ROOTDIR_INUM; i++) {
+    for (int i = 0; i < ROOTDIR_INUM; i++) {
         inodelist[i].flags |=
             I_ALLOCATED | I_UREAD | I_UWRITE | I_OREAD | I_OWRITE;
         inodelist[i].nlinks = 1;
@@ -716,14 +708,13 @@ int main(int argc, char *argv[])
     }
 
     /* INODEPERBLOCK i-nodes fit into a block, so work out how many blocks the
+     * inodelist occupies. Round up to ensure a partial block => full block.
+     * Mark the blocks from 2 up as being in-use.
      */
-    /* inodelist occupies. Round up to ensure a partial block => full block */
-    /* Mark the blocks from 2 up as being in-use */
-    numiblocks = (icount + INODEPERBLOCK - 1) / INODEPERBLOCK;
+    int numiblocks = (icount + INODEPERBLOCK - 1) / INODEPERBLOCK;
     nextfreeblock = 2 + numiblocks;
-    for (i = 2; i < nextfreeblock; i++)
+    for (int i = 2; i < nextfreeblock; i++)
         block_inuse(i);
-
 
     /* Mark the root directory i-node (ROOTDIR_INUM) as in-use */
     /* Create the root directory */
@@ -733,7 +724,7 @@ int main(int argc, char *argv[])
     add_files(argv[0], "/", rootdir);
 
     /* Write out the root directory */
-    write_dir(rootdir, "/");
+    write_dir(rootdir);
 
     /* Write out the superblock and i-nodes */
     write_superblock();
