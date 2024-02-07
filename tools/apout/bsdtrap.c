@@ -35,15 +35,10 @@
 arglist *A; /* Pointer to various arguments on stack */
 
 /* Forward prototypes */
-#ifdef __STDC__
-#define P(s) s
-#else
-#define P(s) ()
-#endif
-static int trap_execve P((int) );
-static int bsdopen_dir P((char *name));
+static int trap_execve(int);
+static int bsdopen_dir(char *name);
 #ifdef NEED_MAP_FCNTL
-static int16_t map_fcntl P((int16_t f));
+static int16_t map_fcntl(int16_t f);
 #endif
 #undef P
 

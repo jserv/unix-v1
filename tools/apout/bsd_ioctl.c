@@ -91,13 +91,6 @@ struct tr_ltchars {
 
 extern arglist *A; /* Pointer to various arguments on stack */
 
-/* Forward prototypes */
-#ifdef __STDC__
-#define P(s) s
-#else
-#define P(s) ()
-#endif
-
 static int trap_gettermios(u_int16_t fd, u_int32_t type, u_int16_t ucnt);
 static int trap_settermios(u_int16_t fd, u_int32_t type, u_int16_t ucnt);
 

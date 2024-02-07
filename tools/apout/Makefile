@@ -10,7 +10,7 @@ CC ?= gcc
 APOUT_OPTIONS ?= -DEMU211 -DEMUV1 -DNATIVES
 
 # Assemble CFLAGS
-CFLAGS ?= -O2 -DINLINE=inline -finline-functions -fomit-frame-pointer
+CFLAGS ?= -O2 -finline-functions -fomit-frame-pointer
 CFLAGS +=-Winline -Wunused-result # silence warnings
 CFLAGS += $(APOUT_OPTIONS)
 

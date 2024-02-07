@@ -20,17 +20,9 @@
                     binaries in the filespace */
 /* #define EMU211			add 2.11BSD emulation */
 /* #define EMUV1			add 1st Edition emulation */
-/* #define INLINE inline		inlines some functions (needs gcc) */
 
-/* Optimisation defines */
-#ifndef INLINE
-#define INLINE
-#endif
-
-/* Special defines to enable/disable certain
- * functionality. These are added as required
- * to port to new platforms. Please send in new
- * defines, please!
+/* Special defines to enable/disable certain functionality. These are added as
+ * required to port to new platforms. Please send in new defines.
  */
 
 #if defined(__FreeBSD__) && __FreeBSD__ < 3
@@ -69,15 +61,11 @@
 #define NEED_INT_N
 #endif
 
-/* Type definitions for PDP data types. You may need to
- * define NEED_INT_N if your system  doesn't provide the
- * types defined below. If you do this, the best way is
- * to add some #if .. #define .. #endif lines above,
- * rather then modifying the ones below. If you make
- * changes to the #if's above, then I would  be very
- * happy to include them.
+/* Type definitions for PDP data types. You may need to define NEED_INT_N if
+ * your system doesn't provide the types defined in <stdint.h>. If you do
+ * this, the best way is to add some #if .. #define .. #endif lines above,
+ * rather then modifying the ones below.
  */
-
 #ifdef NEED_INT_N
 typedef char int8_t;
 typedef short int16_t;
@@ -116,16 +104,7 @@ typedef unsigned long u_int32_t;
 /* Used for opening on directories */
 #define TMP_PLATE "/tmp/apout_tmp_dir.XXXXXX"
 
-/* Set up prototype macro for
- * both K&R and ANSI C platforms
- */
-#ifdef __STDC__
-#define P(s) s
-#else
-#define P(s) ()
-#endif
-
-typedef void(*_itab) P((void) );
+typedef void (*_itab)(void);
 extern _itab itab[]; /* Instruction Table for Fast Decode. */
 
 typedef float FLOAT; /* For now, we use floats to do FP */
@@ -481,189 +460,185 @@ extern u_int16_t *adptr;
 /* Function prototypes */
 
 /* aout.c */
-int load_a_out P((const char *file, const char *origpath, int want_env))
-    /*@globals errno,stdout,stderr; @ */;
+int load_a_out(const char *file, const char *origpath, int want_env);
 #ifdef EMU211
-void do_bsd_overlay P((void) );
+void do_bsd_overlay(void);
 #endif
 
 /* branch.c */
-void br P((void) );
-void blos P((void) );
-void bge P((void) );
-void blt P((void) );
-void ble P((void) );
-void bgt P((void) );
-void jmp P((void) );
-void jsr P((void) );
-void rts P((void) );
-void bne P((void) );
-void beq P((void) );
-void bpl P((void) );
-void bmi P((void) );
-void bhi P((void) );
-void bvc P((void) );
-void bvs P((void) );
-void bcc P((void) );
-void bcs P((void) );
-void scc P((void) );
-void ccc P((void) );
-void sob P((void) );
-void mfps P((void) );
-void mtps P((void) );
-void mfpi P((void) );
-void mtpi P((void) );
-void ash P((void) );
-void mul P((void) );
-void divide P((void) );
-void ashc P((void) );
-void xor P((void) );
+void br(void);
+void blos(void);
+void bge(void);
+void blt(void);
+void ble(void);
+void bgt(void);
+void jmp(void);
+void jsr(void);
+void rts(void);
+void bne(void);
+void beq(void);
+void bpl(void);
+void bmi(void);
+void bhi(void);
+void bvc(void);
+void bvs(void);
+void bcc(void);
+void bcs(void);
+void scc(void);
+void ccc(void);
+void sob(void);
+void mfps(void);
+void mtps(void);
+void mfpi(void);
+void mtpi(void);
+void ash(void);
+void mul(void);
+void divide(void);
+void ashc(void);
+void xor (void);
 
 /* double.c */
-void mov P((void) );
-void movsreg P((void) );
-void movsreg1 P((void) );
-void movsreg1pc P((void) );
-void cmp P((void) );
-void add P((void) );
-void sub P((void) );
-void bit P((void) );
-void bic P((void) );
-void bis P((void) );
-void movb P((void) );
-void cmpb P((void) );
-void bitb P((void) );
-void bicb P((void) );
-void bisb P((void) );
+void mov(void);
+void movsreg(void);
+void movsreg1(void);
+void movsreg1pc(void);
+void cmp(void);
+void add(void);
+void sub(void);
+void bit(void);
+void bic(void);
+void bis(void);
+void movb(void);
+void cmpb(void);
+void bitb(void);
+void bicb(void);
+void bisb(void);
 
 /* cpu.c */
-void run P((void) );
-void sim_init P((void) );
-void bus_error P((int) );
-void seg_fault P((void) );
-void waiti P((void) );
-void halt P((void) );
-void iot P((void) );
-void emt P((void) );
-void bpt P((void) );
-void fis P((void) );
-void illegal P((void) );
-void not_impl P((void) );
-void mark P((void) );
-void mfpd P((void) );
-void mtpd P((void) );
-void trap P((void) );
-void bad_FP_reg P((void) );
-void sigcatcher P((int sig));
+void run(void);
+void sim_init(void);
+void bus_error(int);
+void seg_fault(void);
+void waiti(void);
+void halt(void);
+void iot(void);
+void emt(void);
+void bpt(void);
+void fis(void);
+void illegal(void);
+void not_impl(void);
+void mark(void);
+void mfpd(void);
+void mtpd(void);
+void trap(void);
+void bad_FP_reg(void);
+void sigcatcher(int sig);
 
 /* ea.c */
-void load_ea P((void) );
-void pop P((void) );
-void push P((void) );
-void loadb_dst P((void) );
-void loadb_src P((void) );
-void storeb_dst P((void) );
-void storeb_dst_2 P((void) );
-void loadp_dst P((void) );
-void storep_dst P((void) );
-void load_src P((void) );
-void store_dst P((void) );
-void load_dst P((void) );
-void store_dst_2 P((void) );
+void load_ea(void);
+void pop(void);
+void push(void);
+void loadb_dst(void);
+void loadb_src(void);
+void storeb_dst(void);
+void storeb_dst_2(void);
+void loadp_dst(void);
+void storep_dst(void);
+void load_src(void);
+void store_dst(void);
+void load_dst(void);
+void store_dst_2(void);
 
 /* fp.c */
-void fpset P((void) );
-void ldf P((void) );
-void stf P((void) );
-void clrf P((void) );
-void addf P((void) );
-void subf P((void) );
-void negf P((void) );
-void absf P((void) );
-void mulf P((void) );
-void moddf P((void) );
-void divf P((void) );
-void cmpf P((void) );
-void tstf P((void) );
-void ldfps P((void) );
-void stfps P((void) );
-void lcdif P((void) );
-void stcfi P((void) );
-void stexp P((void) );
-void stcdf P((void) );
-void ldcdf P((void) );
-void stst P((void) );
-void ldexpp P((void) );
+void fpset(void);
+void ldf(void);
+void stf(void);
+void clrf(void);
+void addf(void);
+void subf(void);
+void negf(void);
+void absf(void);
+void mulf(void);
+void moddf(void);
+void divf(void);
+void cmpf(void);
+void tstf(void);
+void ldfps(void);
+void stfps(void);
+void lcdif(void);
+void stcfi(void);
+void stexp(void);
+void stcdf(void);
+void ldcdf(void);
+void stst(void);
+void ldexpp(void);
 
 /* itab.c */
-void dositab0 P((void) );
-void dositab1 P((void) );
+void dositab0(void);
+void dositab1(void);
 
 /* main.c */
-int main P((int argc, char **argv));
-void usage P((void) );
-char *xlate_filename P((char *name));
-void set_apout_root P((char *dirname));
+void usage(void);
+char *xlate_filename(char *name);
+void set_apout_root(char *dirname);
 
 /* magic.c */
-int special_magic P((u_int16_t * cptr));
+int special_magic(u_int16_t *cptr);
 
 /* single.c */
-void adc P((void) );
-void asl P((void) );
-void asr P((void) );
-void clr P((void) );
-void com P((void) );
-void dec P((void) );
-void inc P((void) );
-void neg P((void) );
-void rol P((void) );
-void ror P((void) );
-void sbc P((void) );
-void swabi P((void) );
-void sxt P((void) );
-void tst P((void) );
-void tstb P((void) );
-void aslb P((void) );
-void asrb P((void) );
-void clrb P((void) );
-void comb P((void) );
-void decb P((void) );
-void incb P((void) );
-void negb P((void) );
-void rolb P((void) );
-void rorb P((void) );
-void adcb P((void) );
-void sbcb P((void) );
+void adc(void);
+void asl(void);
+void asr(void);
+void clr(void);
+void com(void);
+void dec(void);
+void inc(void);
+void neg(void);
+void rol(void);
+void ror(void);
+void sbc(void);
+void swabi(void);
+void sxt(void);
+void tst(void);
+void tstb(void);
+void aslb(void);
+void asrb(void);
+void clrb(void);
+void comb(void);
+void decb(void);
+void incb(void);
+void negb(void);
+void rolb(void);
+void rorb(void);
+void adcb(void);
+void sbcb(void);
 
 /* v6trap.c */
-void v6trap P((void) );
+void v6trap(void);
 
 /* v7trap.c */
-void v7trap P((void) );
+void v7trap(void);
 
 /* v1trap.c */
-void v1trap P((void) );
+void v1trap(void);
 
 /* bsdtrap.c */
 #ifdef EMU211
-void bsdtrap P((void) ) /*@globals errno,stdout,stderr; @ */;
+void bsdtrap(void);
 
 /* bsd_ioctl.h */
-int trap_ioctl P((void) );
+int trap_ioctl(void);
 
 /* bsd_signal.c */
-void set_bsdsig_dfl P((void) );
-int do_sigaction P((int sig, int a, int oa));
+void set_bsdsig_dfl(void);
+int do_sigaction(int sig, int a, int oa);
 #endif
 
 /* ke11a.c */
 #ifdef EMUV1
-int16_t kell_word P((u_int16_t addr));
-void kesl_word P((u_int16_t addr, u_int16_t word));
-int8_t kell_byte P((u_int16_t addr));
-void kesl_byte P((u_int16_t addr, u_int8_t byte));
-void set_SR P((void) );
+int16_t kell_word(u_int16_t addr);
+void kesl_word(u_int16_t addr, u_int16_t word);
+int8_t kell_byte(u_int16_t addr);
+void kesl_byte(u_int16_t addr, u_int8_t byte);
+void set_SR(void);
 #endif
-
-#undef P

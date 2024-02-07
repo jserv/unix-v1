@@ -23,17 +23,12 @@
 #endif
 
 /* Forward prototypes */
-#ifdef __STDC__
-#define P(s) s
-#else
-#define P(s) ()
-#endif
-static int trap_exec P((int want_env));
-static int open_dir P((char *name));
-static int trap_gtty P((u_int16_t fd, u_int16_t ucnt));
-static int trap_stty P((u_int16_t fd, u_int16_t ucnt));
-static int v7signal P((int sig, int val));
-static void fixv6time P((time_t * t));
+static int trap_exec(int want_env);
+static int open_dir(char *name);
+static int trap_gtty(u_int16_t fd, u_int16_t ucnt);
+static int trap_stty(u_int16_t fd, u_int16_t ucnt);
+static int v7signal(int sig, int val);
+static void fixv6time(time_t *t);
 #undef P
 
 /* V7 keeps some of the arguments to syscalls in registers, and some

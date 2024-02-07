@@ -47,13 +47,13 @@ void load_ea(void)
     illegal();
 }
 
-INLINE void pop(void)
+inline void pop(void)
 {
     ll_word(regs[SP], dstword);
     regs[SP] += 2;
 }
 
-INLINE void push(void)
+inline void push(void)
 {
     regs[SP] -= 2;
     sl_word(regs[SP], srcword);
@@ -262,7 +262,7 @@ void storeb_dst(void)
     illegal();
 }
 
-INLINE void storeb_dst_2(void)
+inline void storeb_dst_2(void)
 {
     if (DST_MODE == 0) {
         regs[DST_REG] &= 0xff00;
@@ -549,7 +549,7 @@ void load_dst(void)
     illegal();
 }
 
-INLINE void store_dst_2(void)
+inline void store_dst_2(void)
 {
     if (DST_MODE == 0) {
         regs[DST_REG] = dstword;

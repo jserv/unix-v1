@@ -23,14 +23,9 @@
 #endif
 
 /* Forward prototypes */
-#ifdef __STDC__
-#define P(s) s
-#else
-#define P(s) ()
-#endif
-static int v1trap_exec P((void) );
-static int v1open_dir P((char *name));
-static u_int32_t sectosixty P((time_t tim));
+static int v1trap_exec(void);
+static int v1open_dir(char *name);
+static u_int32_t sectosixty(time_t tim);
 
 #undef P
 
