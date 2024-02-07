@@ -40,7 +40,6 @@ static int bsdopen_dir(char *name);
 #ifdef NEED_MAP_FCNTL
 static int16_t map_fcntl(int16_t f);
 #endif
-#undef P
 
 void bsdtrap()
 {
@@ -67,9 +66,6 @@ void bsdtrap()
     struct rusage use;                        /* used in getrusage */
     struct iovec *ivec;                       /* used in writev, readv */
     struct tr_iovec *trivec;                  /* used in writev, readv */
-
-    TrapDebug(
-        (dbg_file, "pid %d %s: ", (int) getpid(), bsdtrap_name[ir & 0xff]));
 
     A = (arglist *) &dspace[(regs[SP] + 2)];
 
@@ -121,11 +117,9 @@ void bsdtrap()
     case S_SBRK: /* DONE */
         if (uarg1 < regs[SP]) {
             i = 0;
-            TrapDebug((dbg_file, "set break to %d ", uarg1));
         } else {
             i = -1;
             errno = ENOMEM;
-            TrapDebug((dbg_file, "break %d > SP %d", uarg1, regs[SP]));
         }
         break;
     case S_SYNC: /* DONE */
@@ -139,13 +133,8 @@ void bsdtrap()
         i = getdtablesize();
         break;
     case S_EXIT: /* DONE */
-#ifdef DEBUG
-        TrapDebug((dbg_file, "val %d\n", sarg1));
-        fflush(dbg_file);
-#endif
         exit(sarg1);
     case S_DUP: /* DONE */
-        TrapDebug((dbg_file, "on %d ", sarg1));
         i = dup(sarg1);
 #ifdef STREAM_BUFFERING
         if ((i != -1) && ValidFD(sarg1) && stream[sarg1]) {
@@ -156,7 +145,6 @@ void bsdtrap()
 #endif
         break;
     case S_DUP2: /* DONE */
-        TrapDebug((dbg_file, "on %d %d ", sarg1, sarg2));
         i = dup2(sarg1, sarg2);
 #ifdef STREAM_BUFFERING
         if ((i != -1) && ValidFD(sarg2) && ValidFD(sarg1) && stream[sarg1]) {
@@ -201,7 +189,6 @@ void bsdtrap()
             break;
         }
     case S_READ: /* DONE */
-        TrapDebug((dbg_file, "%d bytes on %d ", uarg3, sarg1));
         buf = (char *) &dspace[uarg2];
 #ifdef STREAM_BUFFERING
         if (ValidFD(sarg1) && stream[sarg1])
@@ -267,7 +254,6 @@ void bsdtrap()
         break;
     case S_WRITE: /* DONE */
         buf = (char *) &dspace[uarg2];
-        TrapDebug((dbg_file, "%d bytes on %d ", uarg3, sarg1));
 #ifdef STREAM_BUFFERING
         if (ValidFD(sarg1) && stream[sarg1])
             i = fwrite(buf, 1, uarg3, stream[sarg1]);
@@ -276,13 +262,6 @@ void bsdtrap()
             i = write(sarg1, buf, uarg3);
         break;
     case S_CLOSE: /* DONE */
-#ifdef DEBUG
-        TrapDebug((dbg_file, "on %d ", sarg1));
-        if ((dbg_file != NULL) && (sarg1 == fileno(dbg_file))) {
-            i = 0;
-            break; /* Don't close our debug file! */
-        }
-#endif
 #ifdef STREAM_BUFFERING
         if (ValidFD(sarg1) && stream[sarg1]) {
             i = fclose(stream[sarg1]);
@@ -292,7 +271,6 @@ void bsdtrap()
             i = close(sarg1);
         break;
     case S_FCNTL:
-        TrapDebug((dbg_file, "on %d %d %d ", sarg1, sarg2, sarg3));
         i = fcntl(sarg1, sarg2, sarg3);
         break;
     case S_FLOCK:
@@ -302,18 +280,15 @@ void bsdtrap()
         buf = xlate_filename((char *) &dspace[uarg1]);
         tr_stbuf = (struct tr_stat *) &dspace[uarg2];
         i = lstat(buf, &stbuf);
-        TrapDebug((dbg_file, "on %s ", buf));
         goto dostat;
     case S_STAT: /* DONE */
         buf = xlate_filename((char *) &dspace[uarg1]);
         tr_stbuf = (struct tr_stat *) &dspace[uarg2];
         i = stat(buf, &stbuf);
-        TrapDebug((dbg_file, "on %s ", buf));
         goto dostat;
     case S_FSTAT: /* DONE */
         tr_stbuf = (struct tr_stat *) &dspace[uarg2];
         i = fstat(uarg1, &stbuf);
-        TrapDebug((dbg_file, "on fd %d ", uarg1));
 
     dostat:
         if (i == -1)
@@ -423,7 +398,6 @@ void bsdtrap()
         if (i == 0 && (stbuf.st_mode & S_IFDIR)) {
             i = bsdopen_dir(buf);
             fmode = "w+";
-            TrapDebug((dbg_file, "(dir) on %s ", buf));
         } else {
 #ifdef NEED_MAP_FCNTL
             sarg2 = map_fcntl(sarg2);
@@ -440,8 +414,6 @@ void bsdtrap()
                 break;
             }
             i = open(buf, sarg2, sarg3);
-            TrapDebug((dbg_file, "on %s ", buf));
-            TrapDebug((dbg_file, "sarg2 is %d, sarg3 is 0x%x ", sarg2, sarg3));
         }
 #ifdef STREAM_BUFFERING
         if (i == -1)
@@ -556,9 +528,6 @@ void bsdtrap()
         regs[1] = pid;
         break;
     case S_WAIT4: /* Definitely incomplete */
-        TrapDebug((dbg_file, "on pid %d options %d ", sarg1, uarg3));
-        if (uarg4)
-            TrapDebug((dbg_file, " rusage on!!! "));
         shortptr = (int16_t *) &dspace[uarg2];
         i = wait4(sarg1, &j, uarg3, 0);
         *shortptr = j;
@@ -773,7 +742,6 @@ void bsdtrap()
         i = setrlimit(sarg1, &rlp);
         break;
     case S_GETRUSAGE:
-        TrapDebug((dbg_file, "arg1 %d pointer 0%o ", sarg1, uarg2));
         tr_use = (struct tr_rusage *) &dspace[uarg2];
         i = getrusage(sarg1, &use);
         if (i == -1)
@@ -799,8 +767,6 @@ void bsdtrap()
         break;
     default:
         if ((ir & 0xff) > S_GETSOCKNAME) {
-            TrapDebug((stderr, "Apout - unknown syscall %d at PC 0%o\n",
-                       ir & 0xff, regs[PC]));
         } else {
             (void) fprintf(
                 stderr,
@@ -816,11 +782,9 @@ void bsdtrap()
     if (i == -1) {
         SET_CC_C();
         regs[0] = errno;
-        TrapDebug((dbg_file, "errno is %s\n", strerror(errno)));
     } else {
         CLR_CC_C();
         regs[0] = i;
-        TrapDebug((dbg_file, "return %d\n", i));
     }
     return;
 }
@@ -832,7 +796,6 @@ static int trap_execve(int want_env)
 
     origpath = strdup((char *) &dspace[uarg1]);
     name = xlate_filename(origpath);
-    TrapDebug((dbg_file, "%s Execing %s (%s) ", progname, name, origpath));
 
     set_bsdsig_dfl(); /* Set signals to default values */
 
@@ -846,10 +809,8 @@ static int trap_execve(int want_env)
         buf = (char *) &dspace[cptr2];
         Argv[Argc++] = strdup(buf);
         cptr += 2;
-        TrapDebug((dbg_file, "%s ", buf));
     }
     Argv[Argc] = NULL;
-    TrapDebug((dbg_file, "\n"));
 
     if (want_env) {
         cptr = uarg3;
@@ -1001,7 +962,6 @@ static int16_t map_fcntl(int16_t f)
     if (f & BSD_EXCL)
         out |= O_EXCL;
 
-    TrapDebug((dbg_file, "map_fcntl: 0x%x -> 0x%x, ", f, out));
     return (out);
 }
 #endif

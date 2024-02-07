@@ -31,42 +31,6 @@ by making real systems calls to the underlying native operating system.
 In this way, the interpreted a.out binary can interact with the real
 files and processes on the system.
 .Pp
-If
-.Nm apout
-has been compiled with debugging enabled, the following options are available:
-.Bl -tag -width trap
-.It Fl inst
-Output a line for each instruction emulated which gives:
-the PC in octal, the instruction in octal, the instruction's name,
-r0 to r6 in octal, and the values of the N, Z, V and C flags.
-.It Fl trap
-Output a line for each system call, which gives the name of the system
-call, possibly a list of arguments, and the value returned by the system
-call.
-.It Fl jsr
-Output a line for each
-.Ar jsr
-or
-.Ar rts
-giving the value of the new PC. For 2.11BSD overlay binaries, also output
-a line describing each overlay change.
-.It Fl fp
-For many of the emulated floating-point instructions, output a line
-describing the operation.
-.El
-.Pp
-If
-.Nm apout
-was not compiled with debugging enabled, none of these options exist.
-Any debugging output is directed to the file
-.Ar apout.dbg
-in the directory where
-.Nm apout
-was started. The debugging output is primarily designed to aid the
-developers of
-.Nm apout,
-and so it isn't exhaustive for all instructions, traps or floating-point
-operations.
 .Sh ENVIRONMENT VARIABLES
 .Nm apout
 requires one environment variable to be set:

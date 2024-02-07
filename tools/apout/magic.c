@@ -127,11 +127,10 @@ int special_magic(u_int16_t *cptr)
     }
 
     /* Try and find a match */
-    for (i = 0; S[i].cksum != 0; i++)
-        if (S[i].cksum == cksum) {
-            TrapDebug((dbg_file, "This a.out has special magic %d\n", i));
+    for (i = 0; S[i].cksum != 0; i++) {
+        if (S[i].cksum == cksum)
             return (S[i].environment);
-        }
+    }
 
     /* See if user tells us what version to use */
     if ((unix_version = getenv("APOUT_UNIX_VERSION"))) {

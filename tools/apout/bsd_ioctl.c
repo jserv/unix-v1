@@ -94,88 +94,14 @@ extern arglist *A; /* Pointer to various arguments on stack */
 static int trap_gettermios(u_int16_t fd, u_int32_t type, u_int16_t ucnt);
 static int trap_settermios(u_int16_t fd, u_int32_t type, u_int16_t ucnt);
 
-#undef P
-
 int trap_ioctl()
 {
     int i, val;
     long larg1;
-#ifdef DEBUG
-    u_int8_t size, letter, value;
-#endif
     int16_t *shortptr;
     struct winsize *winptr;
 
     larg1 = (sarg2 << 16) | uarg3;
-
-#ifdef DEBUG
-    if (trap_debug) {
-        fprintf(dbg_file, "val %d ", uarg1);
-        switch (larg1) {
-        case TR_FIOCLEX:
-            fprintf(dbg_file, "FIOCLEX ");
-            break;
-        case TR_TIOCGETP:
-            fprintf(dbg_file, "TIOCGETP ");
-            break;
-        case TR_TIOCSETP:
-            fprintf(dbg_file, "TIOCSETP ");
-            break;
-        case TR_TIOCSETN:
-            fprintf(dbg_file, "TIOCSETN ");
-            break;
-        case TR_TIOCSETC:
-            fprintf(dbg_file, "TIOCSETC ");
-            break;
-        case TR_TIOCGETD:
-            fprintf(dbg_file, "TIOCGETD ");
-            break;
-        case TR_TIOCSETD:
-            fprintf(dbg_file, "TIOCSETD ");
-            break;
-        case TR_TIOCGETC:
-            fprintf(dbg_file, "TIOCGETC ");
-            break;
-        case TR_TIOCGLTC:
-            fprintf(dbg_file, "TIOCGLTC ");
-            break;
-        case TR_TIOCSLTC:
-            fprintf(dbg_file, "TIOCSLTC ");
-            break;
-        case TR_TIOCGWINSZ:
-            fprintf(dbg_file, "TIOCGWINSZ ");
-            break;
-        case TR_TIOCSWINSZ:
-            fprintf(dbg_file, "TIOCSWINSZ ");
-            break;
-        case TR_FIOSETOWN:
-            fprintf(dbg_file, "FIOSETOWN ");
-            break;
-        case TR_TIOCMGET:
-            fprintf(dbg_file, "TIOCMGET ");
-            break;
-        case TR_TIOCGPGRP:
-            fprintf(dbg_file, "TIOCGPGRP ");
-            break;
-        case TR_TIOCSPGRP:
-            fprintf(dbg_file, "TIOCSPGRP ");
-            break;
-        default:
-            fprintf(dbg_file, "0x%lx ", larg1);
-
-            value = larg1 & 0xff;
-            letter = (larg1 >> 8) & 0xff;
-            size = (larg1 >> 16) & 0xff;
-
-            fprintf(dbg_file, "('%c' ", letter);
-            fprintf(dbg_file, "size %d ", size);
-            fprintf(dbg_file, "val %d) ", value);
-        }
-        if (size)
-            fprintf(dbg_file, "ptr %d ", uarg4);
-    }
-#endif
-
     switch (larg1) {
     case TR_TIOCGETP:
     case TR_TIOCGETC:
@@ -219,7 +145,6 @@ int trap_ioctl()
         shortptr = (int16_t *) &dspace[uarg4];
         val = *shortptr;
         /* Something wrong here, wonder why! */
-        TrapDebug((dbg_file, "fd %d val %d ", uarg1, val));
         i = ioctl(uarg1, FIOSETOWN, &val);
         break;
     case TR_TIOCMGET:
@@ -381,9 +306,6 @@ static void to_sgttyb(struct tr_sgttyb *sgtb, struct termios *tios)
 /* Convert from old sgttyb to termios structure */
 static void to_termios(struct tr_sgttyb *sgtb, struct termios *tios)
 {
-    TrapDebug(
-        (dbg_file, "\n\tto_termios: sgtty flags are 0x%x ", sgtb->sg_flags));
-
     switch (sgtb->sg_ispeed) {
     case TR_B0:
         tios->c_ispeed = B0;
@@ -524,15 +446,10 @@ static void to_termios(struct tr_sgttyb *sgtb, struct termios *tios)
     }
 
     if (sgtb->sg_flags & TR_CBREAK) {
-        TrapDebug((dbg_file, "\n\tto_termios: setting cbreak I hope "));
         tios->c_lflag &= ~(ECHO | ICANON);
         tios->c_cc[VMIN] = 1;
         tios->c_cc[VTIME] = 0;
     }
-    TrapDebug((dbg_file, "\n\tto_termios: iflag is 0x%x", (int) tios->c_iflag));
-    TrapDebug((dbg_file, "\n\tto_termios: oflag is 0x%x", (int) tios->c_oflag));
-    TrapDebug(
-        (dbg_file, "\n\tto_termios: lflag is 0x%x ", (int) tios->c_lflag));
 }
 
 /* Convert from termios to old [l]tchars structures */

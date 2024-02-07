@@ -25,10 +25,10 @@ BINDIR = $(PREFIX)/bin
 VERSION = apout2.3beta1
 SRCS = \
 	cpu.c aout.c aout.h branch.c double.c ea.c itab.c main.c ke11a.c \
-	single.c fp.c v7trap.c bsdtrap.c defines.h v7trap.h debug.c \
+	single.c fp.c v7trap.c bsdtrap.c defines.h v7trap.h \
 	bsdtrap.h bsd_ioctl.c bsd_signal.c magic.c v1trap.c v1trap.h
 OBJS = \
-	aout.o branch.o bsd_ioctl.o bsd_signal.o bsdtrap.o cpu.o debug.o \
+	aout.o branch.o bsd_ioctl.o bsd_signal.o bsdtrap.o cpu.o \
 	double.o ea.o fp.o itab.o ke11a.o magic.o main.o single.o v1trap.o \
 	v7trap.o
 
@@ -65,7 +65,6 @@ bsd_ioctl.o: bsd_ioctl.c defines.h Makefile
 bsd_signal.o: bsd_signal.c defines.h bsdtrap.h Makefile
 bsdtrap.o: bsdtrap.c bsdtrap.h defines.h Makefile
 cpu.o: cpu.c defines.h Makefile
-debug.o: debug.c defines.h Makefile
 double.o: double.c defines.h Makefile
 ea.o: ea.c defines.h Makefile
 fp.o: fp.c defines.h Makefile

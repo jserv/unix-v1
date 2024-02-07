@@ -27,8 +27,6 @@ static int v1trap_exec(void);
 static int v1open_dir(char *name);
 static u_int32_t sectosixty(time_t tim);
 
-#undef P
-
 /* V1 keeps some of the arguments to syscalls in registers, and some
  * after the `sys' instruction itself. The list below gives the number
  * of words, and the number in registers.
@@ -84,8 +82,6 @@ void v1trap()
     for (; i < v1arg[trapnum].nwords; i++, argbase += 2)
         ll_word(argbase, V1A.uarg[i]);
 
-    TrapDebug((dbg_file, "pid %d %s: ", (int) getpid(), v1trap_name[trapnum]));
-
     switch (trapnum) {
     /* XXX STILL TO DO: V1_GTTY, V1_STTY, V1_TELL */
 
@@ -119,7 +115,6 @@ void v1trap()
             exitval = regs[0] & 0xff;
             if (regs[PC] == 16790)
                 exitval = 0; /* s2-tape /bin/as doesn't set r0 */
-            TrapDebug((dbg_file, " with exitval %d\n", exitval));
             exit(exitval);
         }
         i = -1;
@@ -134,7 +129,6 @@ void v1trap()
         if (uarg1 == 0)
             buf = "."; /* Who knows? for V1 */
         i = stat(buf, &stbuf);
-        TrapDebug((dbg_file, " on %s (stat %d) ", buf, i));
         if (i == -1)
             break;
 
@@ -143,13 +137,10 @@ void v1trap()
         tval[0].tv_usec = 0;
         larg =
             (AC << 16) | (MQ & 0xffff); /* Get mod time in 60ths of a second */
-        TrapDebug((dbg_file, " %ld -> ", larg));
-        larg = larg / 60 + EPOCH72; /* Convert to seconds since 1970 */
-        TrapDebug((dbg_file, " 0x%lx ", larg));
+        larg = larg / 60 + EPOCH72;     /* Convert to seconds since 1970 */
         tval[1].tv_sec = larg;
         tval[1].tv_usec = 0;
         i = utimes(buf, tval);
-        TrapDebug((dbg_file, " and %d for utimes ", i));
         break;
 
     case V1_TIME:
@@ -186,8 +177,6 @@ void v1trap()
 #endif
             i = lseek(sarg1, larg, whence);
 
-        TrapDebug((dbg_file, " on fd %d amt %ld whence %d return %d ", sarg1,
-                   larg, whence, i));
         if (i != -1)
             i = 0;
         regs[0] = i;
@@ -200,7 +189,6 @@ void v1trap()
         else
 #endif
             i = read(sarg1, buf, sarg3);
-        TrapDebug((dbg_file, " on fd %d return %d ", sarg1, i));
         regs[0] = i;
         break;
     case V1_LINK:
@@ -217,7 +205,6 @@ void v1trap()
         else
 #endif
             i = write(sarg1, buf, sarg3);
-        TrapDebug((dbg_file, " on fd %d return %d ", sarg1, i));
         regs[0] = i;
         break;
     case V1_CLOSE:
@@ -230,7 +217,6 @@ void v1trap()
             i = close(sarg1);
         if ((i == 0) && ValidFD(sarg1))
             isdev[sarg1] = 0;
-        TrapDebug((dbg_file, " on fd %d return %d ", sarg1, i));
         break;
     case V1_STAT:
         buf = xlate_filename((char *) &dspace[uarg1]);
@@ -240,12 +226,10 @@ void v1trap()
             buf = "."; /* Who knows? for V1 */
         buf2 = (char *) &dspace[uarg2];
         i = stat(buf, &stbuf);
-        TrapDebug((dbg_file, " on %s return %d ", buf, i));
         goto dostat;
     case V1_FSTAT:
         buf2 = (char *) &dspace[uarg2];
         i = fstat(sarg1, &stbuf);
-        TrapDebug((dbg_file, " on fd %d return %d ", sarg1, i));
 
     dostat:
         if (i == -1)
@@ -293,7 +277,6 @@ void v1trap()
         if (i == 0 && (stbuf.st_mode & S_IFDIR)) {
             i = v1open_dir(buf);
             fmode = "w+";
-            TrapDebug((dbg_file, "(dir) on %s return %d ", buf, i));
         } else {
             switch (sarg2) {
             case 0:
@@ -310,12 +293,10 @@ void v1trap()
                 break;
             }
             i = open(buf, sarg2);
-            TrapDebug((dbg_file, " on %s return %d ", buf, i));
         }
         regs[0] = i;
 
         if (ValidFD(i) && !strncmp((char *) &dspace[uarg1], "/dev/", 5)) {
-            TrapDebug((dbg_file, " (device file) "));
             isdev[i] = 1;
         }
 #ifdef STREAM_BUFFERING
@@ -371,7 +352,6 @@ void v1trap()
         buf = xlate_filename((char *) &dspace[uarg1]);
         uarg2 &= 0x3fff; /* Why are uids > 16384? */
         i = chown(buf, uarg2, 0);
-        TrapDebug((dbg_file, " %d on %s return %d", uarg2, buf, i));
         break;
     case V1_CHDIR:
         buf = xlate_filename((char *) &dspace[uarg1]);
@@ -393,7 +373,6 @@ void v1trap()
         if (uarg2 & V1_ST_WRLDWRITE)
             mode |= S_IWGRP | S_IWOTH;
         i = creat(buf, mode);
-        TrapDebug((dbg_file, " on %s return %d ", buf, i));
 #ifdef STREAM_BUFFERING
         if (ValidFD(i)) {
             stream[i] = fdopen(i, "w");
@@ -416,7 +395,6 @@ void v1trap()
             break;
         }
         exitval = WEXITSTATUS(status);
-        TrapDebug((dbg_file, "exitval %d ", exitval));
         errval = 0;
         if (WIFSIGNALED(status)) {
             switch (WTERMSIG(status)) {
@@ -448,9 +426,7 @@ void v1trap()
             if (WCOREDUMP(status))
                 errval += 16;
         }
-        TrapDebug((dbg_file, "errval %d ", errval));
         MQ = (exitval & 0xff) | (errval << 16);
-        TrapDebug((dbg_file, "v2 return pid is %d, MQ is 0x%x ", i, MQ));
         break;
     case V1_FORK:
         pid = getpid();
@@ -493,14 +469,9 @@ void v1trap()
 
     if (i == -1) {
         SET_CC_C();
-        TrapDebug((dbg_file, "errno is %s\n", strerror(errno)));
     } else {
         CLR_CC_C();
-        TrapDebug((dbg_file, "return %d\n", i));
     }
-#ifdef DEBUG
-    fflush(dbg_file);
-#endif
     return;
 }
 
@@ -511,7 +482,6 @@ static int v1trap_exec(void)
 
     origpath = strdup((char *) &dspace[uarg1]);
     name = xlate_filename(origpath);
-    TrapDebug((dbg_file, "%s Execing %s ", progname, name));
 
     cptr = uarg2;
 
@@ -523,10 +493,8 @@ static int v1trap_exec(void)
         buf = (char *) &dspace[cptr2];
         Argv[Argc++] = strdup(buf);
         cptr += 2;
-        TrapDebug((dbg_file, "%s ", buf));
     }
     Argv[Argc] = NULL;
-    TrapDebug((dbg_file, "\n"));
 
     if (load_a_out(name, origpath, 0) == -1) {
         for (Argc--; Argc >= 0; Argc--)

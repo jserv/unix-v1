@@ -24,10 +24,6 @@ Linux 2.2. It should compile on a 32-bit little-endian machine with
 some form of Unix; you may need to change some header file includes etc.
 See `defines.h' for the details.
 
-If you define the C pre-processor macro `DEBUG' in the `Makefile`, then this
-includes debugging code into the program. I use it quite heavily when
-trying to fix niggling problems.
-
 If you remove the `-DEMU211` macro definition from the `Makefile`, the emulation
 of 2.11BSD will not be compiled in to the simulator. Similarly, if you remove
 the `-DEMUV1` macro definition from the Makefile, the emulation of 1st and 2nd
@@ -55,17 +51,6 @@ Finally, install apout in /usr/local/bin, and the manual page apout.1 in
 the appropriate place. If you can't use the man page because of incompatible
 macros, then apout.0 is a text file which has the pre-formatted man page.
 
-## Debug Options
-When debugging is compiled in, the program has several options:
-* `-inst` :	turns on instruction tracing, which is _very_ verbose
-* `-trap` :	turns on TRAP tracing; not all syscalls have debugging code
-* `-jsr` :	prints out the details of each jsr and rts
-* `-fp`	: prints out some details of floating-point instructions
-
-All debugging output goes out to the file `apout.dbg`. These debugging options
-are mainly used for testing apout, and so the output in apout.dbg may not be
-very useful to you.
-
 ## Environment Variables
 Apout has the concept of a simulated root filesystem for the simulated PDP-11
 binaries. When working with filenames, if the filenames are relative, they
@@ -92,7 +77,6 @@ There's lots to do. Here's what I'd like to do, in a somewhat ordered list.
 `cpu.c`		holds the main instruction decode/execute loop
 `itab.c`		holds function lookup tables for all instructions
 `ea.c`		holds functions to decode the PDP-11 addressing modes
-`debug.c`		holds strings for all emulated opcodes
 
 `single.c`	single.c, double.c and branch.c hold most of the functions
 `double.c`	 which perform the PDP-11 user-mode instructions. The code

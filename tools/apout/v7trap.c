@@ -29,7 +29,6 @@ static int trap_gtty(u_int16_t fd, u_int16_t ucnt);
 static int trap_stty(u_int16_t fd, u_int16_t ucnt);
 static int v7signal(int sig, int val);
 static void fixv6time(time_t *t);
-#undef P
 
 /* V7 keeps some of the arguments to syscalls in registers, and some
  * after the `sys' instruction itself. The list below gives the number
@@ -97,8 +96,6 @@ void v7trap()
         V7A.uarg[i] = regs[i];
     for (; i < v7arg[trapnum].nwords; i++, argbase += 2)
         ll_word(argbase, V7A.uarg[i]);
-
-    TrapDebug((dbg_file, "pid %d %s: ", (int) getpid(), v7trap_name[trapnum]));
 
     switch (trapnum) {
     /* These syscalls are not implemented, and */
@@ -216,8 +213,6 @@ void v7trap()
 #endif
             i = lseek(sarg1, larg, whence);
 
-        TrapDebug((dbg_file, " on fd %d amt %ld whence %d return %d ", sarg1,
-                   larg, whence, i));
         if ((Binary == IS_A68 || Binary == IS_V6) || (Binary == IS_V5)) {
             if (i != -1)
                 i = 0;
@@ -234,7 +229,6 @@ void v7trap()
         else
 #endif
             i = read(sarg1, buf, uarg3);
-        TrapDebug((dbg_file, " on fd %d return %d ", sarg1, i));
         break;
     case S_LINK:
         buf = xlate_filename((char *) &dspace[uarg1]);
@@ -256,7 +250,6 @@ void v7trap()
         else
 #endif
             i = write(sarg1, buf, uarg3);
-        TrapDebug((dbg_file, " on fd %d return %d ", sarg1, i));
         break;
     case S_CLOSE:
 #ifdef STREAM_BUFFERING
@@ -266,7 +259,6 @@ void v7trap()
         } else
 #endif
             i = close(sarg1);
-        TrapDebug((dbg_file, " on fd %d return %d ", sarg1, i));
         break;
     case S_GTTY:
         i = trap_gtty(uarg1, uarg2);
@@ -313,12 +305,10 @@ void v7trap()
             buf = ".";
         buf2 = (char *) &dspace[uarg2];
         i = stat(buf, &stbuf);
-        TrapDebug((dbg_file, " on %s return %d ", buf, i));
         goto dostat;
     case S_FSTAT:
         buf2 = (char *) &dspace[uarg2];
         i = fstat(sarg1, &stbuf);
-        TrapDebug((dbg_file, " on fd %d return %d ", sarg1, i));
 
     dostat:
         if (i == -1)
@@ -428,7 +418,6 @@ void v7trap()
         if (i == 0 && (stbuf.st_mode & S_IFDIR)) {
             i = open_dir(buf);
             fmode = "w+";
-            TrapDebug((dbg_file, "(dir) on %s return %d ", buf, i));
         } else {
             switch (sarg2) {
             case 0:
@@ -445,7 +434,6 @@ void v7trap()
                 break;
             }
             i = open(buf, sarg2);
-            TrapDebug((dbg_file, " on %s return %d ", buf, i));
         }
 
 #ifdef STREAM_BUFFERING
@@ -590,16 +578,9 @@ void v7trap()
 
     if (i == -1) {
         SET_CC_C();
-        TrapDebug((dbg_file, "errno is %s\n", strerror(errno)));
     } else {
         CLR_CC_C();
         regs[0] = i;
-#ifdef DEBUG
-        if (trap_debug) {
-            fprintf(dbg_file, "return %d\n", i);
-            fflush(dbg_file);
-        }
-#endif
     }
     return;
 }
@@ -618,7 +599,6 @@ static int trap_exec(int want_env)
 
     origpath = strdup((char *) &dspace[uarg1]);
     name = xlate_filename(origpath);
-    TrapDebug((dbg_file, "%s Execing %s ", progname, name));
 
     for (i = 0; i < V7_NSIG; i++)
         signal(v7sig[i], SIG_DFL);
@@ -634,10 +614,8 @@ static int trap_exec(int want_env)
         buf = (char *) &dspace[cptr2];
         Argv[Argc++] = strdup(buf);
         cptr += 2;
-        TrapDebug((dbg_file, "%s ", buf));
     }
     Argv[Argc] = NULL;
-    TrapDebug((dbg_file, "\n"));
 
     if (want_env) {
         cptr = uarg3;

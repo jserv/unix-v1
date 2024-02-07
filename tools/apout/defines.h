@@ -13,7 +13,6 @@
 
 /* Defines for ifdef'd code -- define them in the Makefile */
 
-/* #define DEBUG			adds in debugging code */
 /* #define ZERO_MEMORY			zeros all of process memory before
                     it starts to run */
 /* #define NATIVES			allows native binaries and PDP-11
@@ -73,29 +72,6 @@ typedef long int32_t;
 typedef unsigned char u_int8_t;
 typedef unsigned short u_int16_t;
 typedef unsigned long u_int32_t;
-#endif
-
-/* Macro defines for debug output, makes
- * the code look somewhat cleaner
- */
-#ifdef DEBUG
-#define TrapDebug(x) \
-    if (trap_debug)  \
-    (void) fprintf x
-#define InstDebug(x) \
-    if (inst_debug)  \
-    (void) fprintf x
-#define JsrDebug(x) \
-    if (jsr_debug)  \
-    (void) fprintf x
-#define FpDebug(x) \
-    if (fp_debug)  \
-    (void) fprintf x
-#else
-#define TrapDebug(x)
-#define InstDebug(x)
-#define JsrDebug(x)
-#define FpDebug(x)
 #endif
 
 /* Defines for -DSTREAM_BUFFERING */
@@ -173,16 +149,6 @@ extern int Binary; /* Type of binary this a.out is. One of: */
 /* 2.11BSD overlay stuff */
 extern u_int32_t ov_changes; /* Number of overlay changes */
 extern u_int8_t current_ov;  /* Current overlay number */
-
-#ifdef DEBUG
-/* Debugging flags */
-extern int inst_debug, /* Print a line before each instruction */
-    trap_debug,        /* Print details of each trap */
-    jsr_debug,         /* Print out each jsr */
-    fp_debug;          /* Print out each floating-point instruction */
-extern FILE *dbg_file; /* Debugging output file */
-extern char *progname; /* The program's name - used in debugging */
-#endif
 
 /* We keep a list of signals that are pending */
 struct our_siglist {

@@ -126,7 +126,6 @@ void jsr()
     push();
     regs[SRC_REG] = regs[PC];
     regs[PC] = dstword;
-    JsrDebug((dbg_file, "jsr to 0%o\n", dstword));
 }
 
 /* rts() - Return From Subroutine Instruction. */
@@ -135,7 +134,6 @@ void rts()
     regs[PC] = regs[DST_REG];
     pop();
     regs[DST_REG] = dstword;
-    JsrDebug((dbg_file, "rts to 0%o\n", regs[PC]));
 }
 
 void scc()

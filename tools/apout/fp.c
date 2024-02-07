@@ -8,9 +8,11 @@
  *
  * If this is a problem, then feel free to correct it.
  */
+
 #include <math.h>
 #include <stdint.h>
 #include "defines.h"
+
 #ifdef HAVE_POWF
 float powf(float x, float y); /* FreeBSD 3.X no longer defines this */
 #else
@@ -59,7 +61,6 @@ static void from11float(FLOAT *out, pdpfloat *in)
     *out = (float) fraction * z;
     if (in->sign)
         *out = -(*out);
-    FpDebug((dbg_file, "\t0%o from11float out is %f\n", regs[7], *out));
 }
 
 /* Convert from native representation to PDP-11 float representation */
@@ -69,7 +70,6 @@ static void to11float(FLOAT *in, pdpfloat *out)
     u_int32_t fraction;
     FLOAT infloat = *in;
 
-    FpDebug((dbg_file, "\t0%o to11float in is %f\n", regs[7], infloat));
     if (infloat < 0.0) {
         out->sign = 1;
         infloat = -infloat;
@@ -113,7 +113,6 @@ static void load_flt(void)
     u_int16_t indirect, addr;
     u_int16_t *intptr;
 
-    FpDebug((dbg_file, "\tload_flt mode %d\n", DST_MODE));
     switch (DST_MODE) {
     case 0:
         Srcflt = fregs[DST_REG];
@@ -208,7 +207,6 @@ static void save_flt(void)
     u_int16_t addr;
     pdpfloat *fladdr;
 
-    FpDebug((dbg_file, "\tsave_flt mode %d\n", DST_MODE));
     switch (DST_MODE) {
     case 0:
         fregs[DST_REG] = Srcflt;

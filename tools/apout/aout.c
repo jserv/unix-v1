@@ -134,8 +134,6 @@ int load_script(const char *file, const char *origpath, FILE *zin, int want_env)
     int i, script_cnt = 0;
     char **ap;
 
-    for (i = 0; i < Argc; i++)
-        TrapDebug((dbg_file, "In load_script Argv[%d] is %s\n", i, Argv[i]));
     /* Get the first line of the file */
     if (((script_line = (char *) malloc(SCRIPT_LINESIZE)) == NULL) ||
         (fgets(script_line, SCRIPT_LINESIZE, zin) == NULL)) {
@@ -155,13 +153,6 @@ int load_script(const char *file, const char *origpath, FILE *zin, int want_env)
         free(script_line);
         return (-1);
     }
-#ifdef DEBUG
-    TrapDebug((dbg_file, "Script: extra args are is %d\n", script_cnt));
-    if (trap_debug) {
-        for (i = 0; i < script_cnt; i++)
-            fprintf(dbg_file, " script_arg[%d] is %s\n", i, script_arg[i]);
-    }
-#endif
 
     /* Ensure we have room to shift the args */
     if ((Argc + script_cnt) > MAX_ARGS) {
@@ -172,9 +163,6 @@ int load_script(const char *file, const char *origpath, FILE *zin, int want_env)
     /* Now shift the args up and insert new ones */
     for (i = Argc - 1; i != 0; i--)
         Argv[i + script_cnt] = Argv[i];
-    for (i = 0; i < Argc; i++)
-        TrapDebug(
-            (dbg_file, "Part A load_script Argv[%d] is %s\n", i, Argv[i]));
     for (i = 0; i < script_cnt; i++)
         Argv[i] = script_arg[i];
     if (origpath != NULL)
@@ -182,15 +170,9 @@ int load_script(const char *file, const char *origpath, FILE *zin, int want_env)
     else
         Argv[i] = strdup(file);
     Argc += script_cnt;
-    for (i = 0; i < Argc; i++)
-        TrapDebug(
-            (dbg_file, "Part B load_script Argv[%d] is %s\n", i, Argv[i]));
 
     file = xlate_filename(script_arg[0]);
     free(script_line);
-    for (i = 0; i < Argc; i++)
-        TrapDebug(
-            (dbg_file, "Leaving load_script Argv[%d] is %s\n", i, Argv[i]));
     return (load_a_out(file, origpath, want_env));
 }
 
@@ -216,9 +198,6 @@ int load_a_out(const char *file, const char *origpath, int want_env)
 #ifdef RUN_V1_RAW
     struct stat stb;
 #endif
-
-    for (i = 0; i < Argc; i++)
-        TrapDebug((dbg_file, "In load_a_out Argv[%d] is %s\n", i, Argv[i]));
 
     (void) signal(SIGBUS, bus_error); /* Catch all bus errors here */
 
@@ -262,21 +241,12 @@ int load_a_out(const char *file, const char *origpath, int want_env)
      * binaries in the same filespace.
      */
     if (e.a_magic == UNKNOWN_AOUT) {
-#ifdef DEBUG
-        TrapDebug((dbg_file, "About to try native exec on %s\n", file));
-        fflush(dbg_file);
-#endif
         (void) fclose(zin);
         execv(file, Argv); /* envp[] is the one Apout's main() got */
-        TrapDebug((dbg_file, "Nope, didn't work\n"));
 #endif
 
 #ifdef RUN_V1_RAW
         /* Try to run it as a V1 raw binary */
-#ifdef DEBUG
-        TrapDebug((dbg_file, "About to try PDP-11 raw exec on %s\n", file));
-        fflush(dbg_file);
-#endif                                        /* DEBUG */
         if ((zin = fopen(file, "r")) == NULL) /* reopen the file */
             return (-1);
         e.a_magic = V1_RAW;
@@ -286,36 +256,9 @@ int load_a_out(const char *file, const char *origpath, int want_env)
     return (-1);
 #endif /* RUN_V1_RAW */
     }
-    /* Now we know what environment to
-     * create, set up the memory areas
-     * according to the magic numbers
+    /* Now we know what environment to create, set up the memory areas
+     * according to the magic numbers.
      */
-#ifdef DEBUG
-    switch (Binary) {
-    case IS_A68:
-        TrapDebug((dbg_file, "A68 binary\n"));
-        break;
-    case IS_V1:
-        TrapDebug((dbg_file, "V1 binary\n"));
-        break;
-    case IS_V2:
-        TrapDebug((dbg_file, "V2 binary\n"));
-        break;
-    case IS_V5:
-        TrapDebug((dbg_file, "V5 binary\n"));
-        break;
-    case IS_V6:
-        TrapDebug((dbg_file, "V6 binary\n"));
-        break;
-    case IS_V7:
-        TrapDebug((dbg_file, "V7 binary\n"));
-        break;
-    case IS_211BSD:
-        TrapDebug((dbg_file, "2.11BSD binary\n"));
-        break;
-    }
-#endif
-
     switch (e.a_magic) {
 #ifdef RUN_V1_RAW
     case V1_RAW:
@@ -628,23 +571,8 @@ static void set_arg_env(int want_env)
         for (i = 0; i < Envc; i++)
             Envp[i] = default_envp[i];
     }
-#ifdef DEBUG
-    /* Set up the program's name -- used for debugging */
-    if (progname)
-        free(progname);
-    progname = strdup(Argv[0]);
-
-    if (trap_debug) {
-        fprintf(dbg_file, "In set_arg_env, Argc is %d\n", Argc);
-        for (i = 0; i < Argc; i++)
-            fprintf(dbg_file, "  Argv[%d] is %s\n", i, Argv[i]);
-        for (i = 0; i < Envc; i++)
-            fprintf(dbg_file, "  Envp[%d] is %s\n", i, Envp[i]);
-    }
-#endif
 
     /* Now build the arguments and pointers on the stack */
-
 #ifdef EMUV1
     if ((Binary == IS_V1) || (Binary == IS_V2))
         posn = KE11LO - 2; /* Start below the KE11A */
@@ -690,7 +618,6 @@ static void set_arg_env(int want_env)
     regs[SP] = (u_int16_t) posn;     /* and initialise the SP */
 }
 
-
 #ifdef EMU211
 /* This function probably belongs in bsdtrap.c, but all the vars are
  * here, so why not!
@@ -706,7 +633,6 @@ void do_bsd_overlay()
         fprintf(stderr, "Apout - can't switch to empty overlay %d\n", ov);
         exit(EXIT_FAILURE);
     }
-    JsrDebug((dbg_file, "switching to overlay %d\n", ov));
 
     /* Memcpy overlay into main ispace */
     memcpy(ovbase, ovlist[ov].ovlay, ovlist[ov].size);

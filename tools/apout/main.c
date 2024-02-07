@@ -21,22 +21,9 @@ static char *rfn[2];
 static int whichrfn = 0;
 char *apout_root = NULL; /* Root dir for simulated a.out */
 
-#ifdef DEBUG
-/* Debugging flags */
-int inst_debug = 0,    /* Print a line before each instruction */
-    trap_debug = 0,    /* Print details of each trap */
-    jsr_debug = 0,     /* Print out each jsr */
-    fp_debug = 0;      /* Print out each floating-point instruction */
-FILE *dbg_file = NULL; /* Debugging output file */
-char *progname = NULL; /* The program's name - used in debugging */
-#endif
-
 void usage()
 {
     fprintf(stderr, "Usage: apout");
-#ifdef DEBUG
-    fprintf(stderr, " [-inst] [-trap] [-jsr] [-fp]");
-#endif
     fprintf(stderr, " pdp11_binary\n");
     exit(1);
 }
@@ -59,38 +46,6 @@ int main(int argc, char **argv)
         usage();
     if (!strcmp(argv[1], "--help"))
         usage();
-
-#ifdef DEBUG
-    while (1) {
-        if (!strcmp(argv[1], "-inst")) {
-            inst_debug = 1;
-            argc--;
-            argv++;
-            continue;
-        }
-        if (!strcmp(argv[1], "-trap")) {
-            trap_debug = 1;
-            argc--;
-            argv++;
-            continue;
-        }
-        if (!strcmp(argv[1], "-jsr")) {
-            jsr_debug = 1;
-            argc--;
-            argv++;
-            continue;
-        }
-        if (!strcmp(argv[1], "-fp")) {
-            fp_debug = 1;
-            argc--;
-            argv++;
-            continue;
-        }
-        break;
-    }
-    if (inst_debug | trap_debug | jsr_debug | fp_debug)
-        dbg_file = fopen("apout.dbg", "w");
-#endif
 
     /* Prepare arg list for emulated environment */
     argc--;
