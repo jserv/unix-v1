@@ -791,7 +791,7 @@ void bsdtrap()
 
 static int trap_execve(int want_env)
 {
-    u_int16_t cptr, cptr2;
+    uint16_t cptr, cptr2;
     char *buf, *name, *origpath;
 
     origpath = strdup((char *) &dspace[uarg1]);
@@ -907,7 +907,7 @@ static int bsdopen_dir(char *name)
             odent.d_ino = 1;
         odent.d_namlen = nlen;
         nlen += (nlen & 3);        /* Round up to mult of 4 */
-        odent.d_reclen = nlen + 6; /* Name + 3 u_int16_ts */
+        odent.d_reclen = nlen + 6; /* Name + 3 uint16_ts */
 
         /* Not enough room, write */
         /* a blank entry */

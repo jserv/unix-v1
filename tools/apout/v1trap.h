@@ -43,7 +43,6 @@
 #define V1_GTTY 32
 #define V1_ILGINS 33
 
-
 char *v1trap_name[] = {
     "rele",  "exit",   "fork",   "read",   "write", "open",   "close",
     "wait",  "creat",  "link",   "unlink", "exec",  "chdir",  "time",
@@ -53,15 +52,15 @@ char *v1trap_name[] = {
 };
 
 struct tr_v1stat {
-    u_int16_t inum;
-    u_int16_t iflags; /* Mode */
-    u_int8_t inl;     /* Links */
-    u_int8_t iuid;
-    u_int16_t isize;
+    uint16_t inum;
+    uint16_t iflags; /* Mode */
+    uint8_t inl;     /* Links */
+    uint8_t iuid;
+    uint16_t isize;
     int16_t iaddr[8]; /* Not used, I hope! */
-    u_int32_t ctime;
-    u_int32_t mtime;
-    u_int16_t unused;
+    uint32_t ctime;
+    uint32_t mtime;
+    uint16_t unused;
 };
 
 /* Values for v1stat iflags */
@@ -80,8 +79,8 @@ struct tr_v1stat {
  * we can get at the various args of different types
  */
 typedef union {
-    int16_t sarg[4];   /* Signed 16-bit args */
-    u_int16_t uarg[4]; /* Unsigned 16-bit args */
+    int16_t sarg[4];  /* Signed 16-bit args */
+    uint16_t uarg[4]; /* Unsigned 16-bit args */
 } arglist;
 
 #define sarg1 V1A.sarg[0]

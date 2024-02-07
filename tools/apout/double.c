@@ -2,7 +2,7 @@
  */
 #include "defines.h"
 
-static u_int32_t templong;
+static uint32_t templong;
 
 /* mov() - Move Instruction.  Move operations with registers as the source
  * and/or destination have been inlined. */
@@ -78,7 +78,7 @@ void cmp()
     load_dst();
 
     tmpword = ~dstword;
-    templong = ((u_int32_t) srcword) + ((u_int32_t) (tmpword)) + 1;
+    templong = ((uint32_t) srcword) + ((uint32_t) (tmpword)) + 1;
     tmpword = LOW16(templong);
 
     CHG_CC_N(tmpword);
@@ -93,7 +93,7 @@ void add()
     load_src();
     load_dst();
 
-    templong = ((u_int32_t) srcword) + ((u_int32_t) dstword);
+    templong = ((uint32_t) srcword) + ((uint32_t) dstword);
     tmpword = LOW16(templong);
 
     CHG_CC_N(tmpword);
@@ -112,7 +112,7 @@ void sub()
     load_dst();
 
     tmpword = ~srcword;
-    templong = ((u_int32_t) dstword) + ((u_int32_t) tmpword) + 1;
+    templong = ((uint32_t) dstword) + ((uint32_t) tmpword) + 1;
     tmpword = LOW16(templong);
 
     CHG_CC_N(tmpword);
@@ -151,7 +151,6 @@ void bic()
     store_dst_2();
 }
 
-
 /* bis() - Bit Set Instruction. */
 void bis()
 {
@@ -187,22 +186,22 @@ void movb()
         storeb_dst();
     } else {
         if (srcbyte & SIGN_B)
-            regs[DST_REG] = (u_int16_t) 0177400 + (u_int16_t) srcbyte;
+            regs[DST_REG] = (uint16_t) 0177400 + (uint16_t) srcbyte;
         else
-            regs[DST_REG] = (u_int16_t) srcbyte;
+            regs[DST_REG] = (uint16_t) srcbyte;
     }
 }
 
 /* cmpb() - Compare Byte Instruction. */
 void cmpb()
 {
-    u_int8_t data3;
+    uint8_t data3;
 
     loadb_src();
     loadb_dst();
 
-    data3 = (u_int8_t) ~dstbyte;
-    tmpword = ((u_int16_t) srcbyte) + ((u_int16_t) (data3)) + 1;
+    data3 = (uint8_t) ~dstbyte;
+    tmpword = ((uint16_t) srcbyte) + ((uint16_t) (data3)) + 1;
     data3 = LOW8(tmpword);
 
     CHGB_CC_N(data3);
@@ -230,7 +229,7 @@ void bicb()
     loadb_src();
     loadb_dst();
 
-    dstbyte = (u_int8_t) ((~srcbyte) & dstbyte);
+    dstbyte = (uint8_t) ((~srcbyte) & dstbyte);
 
     CHGB_CC_N(dstbyte);
     CHGB_CC_Z(dstbyte);

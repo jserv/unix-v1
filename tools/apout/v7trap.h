@@ -75,8 +75,8 @@ char *v7trap_name[] = {
 
 struct tr_v7stat {
     int16_t st_dev;
-    u_int16_t st_ino;
-    u_int16_t st_mode;
+    uint16_t st_ino;
+    uint16_t st_mode;
     int16_t st_nlink;
     int16_t st_uid;
     int16_t st_gid;
@@ -94,16 +94,16 @@ struct tr_v6stat {
     int8_t inl;     /* Links */
     int8_t iuid;
     int8_t igid;
-    u_int8_t isize0; /* Most significant 8 bits */
-    u_int16_t isize;
+    uint8_t isize0; /* Most significant 8 bits */
+    uint16_t isize;
     int16_t iaddr[8]; /* Not used, I hope! */
-    u_int32_t atime;  /* Alignment problems */
-    u_int32_t mtime;  /* Alignment problems */
+    uint32_t atime;   /* Alignment problems */
+    uint32_t mtime;   /* Alignment problems */
 };
 
 struct tr_timeb {
-    u_int32_t time;
-    u_int16_t millitm;
+    uint32_t time;
+    uint16_t millitm;
     int16_t timezone;
     int16_t dstflag;
 };
@@ -158,8 +158,8 @@ struct tr_sgttyb {
  * we can get at the various args of different types
  */
 typedef union {
-    int16_t sarg[4];   /* Signed 16-bit args */
-    u_int16_t uarg[4]; /* Unsigned 16-bit args */
+    int16_t sarg[4];  /* Signed 16-bit args */
+    uint16_t uarg[4]; /* Unsigned 16-bit args */
 } arglist;
 
 #define sarg1 V7A.sarg[0]

@@ -14,7 +14,7 @@ static u_int8_t darray[PDP_MEM_SIZE], iarray[PDP_MEM_SIZE];
  * a.out, if there are any. Missing overlays have size 0 and pointer NULL.
  */
 static struct {
-    u_int16_t size;
+    uint16_t size;
     u_int8_t *ovlay;
 } ovlist[NOVL] = {
     {0, NULL}, {0, NULL}, {0, NULL}, {0, NULL}, {0, NULL},
@@ -22,9 +22,9 @@ static struct {
     {0, NULL}, {0, NULL}, {0, NULL}, {0, NULL}, {0, NULL},
 };
 
-static u_int8_t *ovbase;  /* Base address of 2.11BSD overlays */
-u_int32_t ov_changes = 0; /* Number of overlay changes */
-u_int8_t current_ov = 0;  /* Current overlay number */
+static u_int8_t *ovbase; /* Base address of 2.11BSD overlays */
+uint32_t ov_changes = 0; /* Number of overlay changes */
+u_int8_t current_ov = 0; /* Current overlay number */
 #endif
 
 /* Global array of pointers to arguments and environment. This
@@ -61,7 +61,7 @@ int load_aout_header(FILE *zin, struct exec *E)
     /* Read the a_magic value first */
     /* This makes it easier to deal with */
     /* parsing any script interpreter below */
-    if (fread(E, sizeof(u_int16_t), 1, zin) != 1)
+    if (fread(E, sizeof(uint16_t), 1, zin) != 1)
         return (-1);
 
     switch (E->a_magic) {
@@ -84,8 +84,8 @@ int load_aout_header(FILE *zin, struct exec *E)
     /* We can deal with this a.out, so */
     /* read in the rest of the header */
     cptr = (char *) &(E->a_text);
-    if (fread(cptr, 1, sizeof(struct exec) - sizeof(u_int16_t), zin) <
-        16 - sizeof(u_int16_t))
+    if (fread(cptr, 1, sizeof(struct exec) - sizeof(uint16_t), zin) <
+        16 - sizeof(uint16_t))
         return (-1);
 
     switch (E->a_magic) {
@@ -114,7 +114,7 @@ int load_aout_header(FILE *zin, struct exec *E)
             return (IS_211BSD);
 
         /* Still no idea, use checksum to determine */
-        return (special_magic((u_int16_t *) E));
+        return (special_magic((uint16_t *) E));
 
     default: /* Should never get here */
         E->a_magic = UNKNOWN_AOUT;
@@ -176,7 +176,6 @@ int load_script(const char *file, const char *origpath, FILE *zin, int want_env)
     return (load_a_out(file, origpath, want_env));
 }
 
-
 /* Load the named PDP-11 executable file into the emulator's memory.
  * Returns 0 if ok, -1 if error. Also initialise the simulator and set
  * up the stack for the process with Argc, Argv, Envc, Envp.
@@ -190,7 +189,7 @@ int load_a_out(const char *file, const char *origpath, int want_env)
     FILE *zin;
     struct exec e;
     u_int8_t *ibase, *dbase, *bbase; /* Instruction, data, bss bases */
-    u_int16_t size;
+    uint16_t size;
     int i;
 #ifdef EMU211
     int j;
@@ -392,7 +391,6 @@ int load_a_out(const char *file, const char *origpath, int want_env)
         return (-1);
     }
 
-
     /* Initialise the instruction table for our environment */
     switch (Binary) {
 #ifdef EMU211
@@ -504,7 +502,6 @@ int load_a_out(const char *file, const char *origpath, int want_env)
     if ((bbase != 0) && (e.a_bss != 0))
         memset(bbase, 0, (size_t) e.a_bss);
 
-
     /* Set up the registers and flags, and the stack */
     (void) fclose(zin);
     sim_init();
@@ -601,7 +598,7 @@ static void set_arg_env(int want_env)
     if (want_env == 1) { /* For each env string */
         for (i = Envc - 1; i != -1; i--) {
             posn -= 2; /* put a pointer to the string */
-            sl_word(posn, (u_int16_t) eposn[i]);
+            sl_word(posn, (uint16_t) eposn[i]);
         }
         posn -= 2;
     }
@@ -611,11 +608,11 @@ static void set_arg_env(int want_env)
 
     for (i = Argc - 1; i != -1; i--) { /* For each arg string */
         posn -= 2;
-        sl_word(posn, (u_int16_t) aposn[i]); /* put a ptr to the string */
+        sl_word(posn, (uint16_t) aposn[i]); /* put a ptr to the string */
     }
     posn -= 2;
-    sl_word(posn, (u_int16_t) Argc); /* Save the count of args */
-    regs[SP] = (u_int16_t) posn;     /* and initialise the SP */
+    sl_word(posn, (uint16_t) Argc); /* Save the count of args */
+    regs[SP] = (uint16_t) posn;     /* and initialise the SP */
 }
 
 #ifdef EMU211

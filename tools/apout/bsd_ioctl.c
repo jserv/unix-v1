@@ -91,8 +91,8 @@ struct tr_ltchars {
 
 extern arglist *A; /* Pointer to various arguments on stack */
 
-static int trap_gettermios(u_int16_t fd, u_int32_t type, u_int16_t ucnt);
-static int trap_settermios(u_int16_t fd, u_int32_t type, u_int16_t ucnt);
+static int trap_gettermios(uint16_t fd, uint32_t type, uint16_t ucnt);
+static int trap_settermios(uint16_t fd, uint32_t type, uint16_t ucnt);
 
 int trap_ioctl()
 {
@@ -499,7 +499,7 @@ static void tc_to_tchars(struct tr_tchars *tc,
 }
 
 /* Handle most get ioctls that deal with termios stuff */
-static int trap_gettermios(u_int16_t fd, u_int32_t type, u_int16_t ucnt)
+static int trap_gettermios(uint16_t fd, uint32_t type, uint16_t ucnt)
 {
     struct termios tios;
     struct tr_sgttyb *sgtb;
@@ -533,7 +533,7 @@ static int trap_gettermios(u_int16_t fd, u_int32_t type, u_int16_t ucnt)
 }
 
 /* Handle most set ioctls that deal with termios stuff */
-static int trap_settermios(u_int16_t fd, u_int32_t type, u_int16_t ucnt)
+static int trap_settermios(uint16_t fd, uint32_t type, uint16_t ucnt)
 {
     struct termios tios;
     struct tr_sgttyb *sgtb;

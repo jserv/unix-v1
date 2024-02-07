@@ -4,25 +4,25 @@
 #include <unistd.h>
 #include "defines.h"
 
-u_int8_t *ispace, *dspace; /* Instruction and Data spaces */
-u_int16_t dwrite_base = 2; /* Lowest addr where dspace writes can occur */
+uint8_t *ispace, *dspace; /* Instruction and Data spaces */
+uint16_t dwrite_base = 2; /* Lowest addr where dspace writes can occur */
 
-u_int16_t regs[8]; /* general registers */
-u_int16_t ir;      /* current instruction register */
-u_int16_t *adptr;  /* used in memory access macros */
-u_int16_t ea_addr; /* stored address for dest modifying insts */
+uint16_t regs[8]; /* general registers */
+uint16_t ir;      /* current instruction register */
+uint16_t *adptr;  /* used in memory access macros */
+uint16_t ea_addr; /* stored address for dest modifying insts */
 
 int CC_N = 0; /* The processor status word is represented */
 int CC_Z = 0; /* by these four values. On some */
 int CC_V = 0; /* architectures, you may get a performance */
 int CC_C = 0; /* increase by using shorts or bytes */
 
-u_int16_t dstword; /* These globals are used in the effective */
-u_int16_t srcword; /* address calculations, mainly to save */
-u_int16_t tmpword; /* parameter passing overheads in */
-u_int8_t dstbyte;  /* function calls */
-u_int8_t srcbyte;
-u_int8_t tmpbyte;
+uint16_t dstword; /* These globals are used in the effective */
+uint16_t srcword; /* address calculations, mainly to save */
+uint16_t tmpword; /* parameter passing overheads in */
+uint8_t dstbyte;  /* function calls */
+uint8_t srcbyte;
+uint8_t tmpbyte;
 struct our_siglist *Sighead = NULL; /* List of pending signals */
 struct our_siglist *Sigtail = NULL; /* List of pending signals */
 void (*sigrunner)(void) = NULL;     /* F'n that will run the signal */

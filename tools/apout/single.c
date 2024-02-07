@@ -226,8 +226,8 @@ void sbc()
 /* swabi() - Swap Bytes Instruction. */
 void swabi()
 {
-    u_int16_t data2;
-    u_int16_t data3;
+    uint16_t data2;
+    uint16_t data3;
 
     load_dst();
 

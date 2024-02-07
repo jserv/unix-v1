@@ -25,7 +25,7 @@
 /* Forward prototypes */
 static int v1trap_exec(void);
 static int v1open_dir(char *name);
-static u_int32_t sectosixty(time_t tim);
+static uint32_t sectosixty(time_t tim);
 
 /* V1 keeps some of the arguments to syscalls in registers, and some
  * after the `sys' instruction itself. The list below gives the number
@@ -59,7 +59,7 @@ void v1trap()
     int i, mode, pid;
     int status, exitval, errval; /* used in V2 wait */
     int whence;
-    u_int16_t argbase;
+    uint16_t argbase;
     int trapnum;
     long larg;
     char *buf, *buf2;
@@ -242,8 +242,8 @@ void v1trap()
             t1->inum += 100;
         t1->inl = stbuf.st_nlink;
         t1->iuid = stbuf.st_uid;
-        t1->isize = (u_int16_t) (stbuf.st_size & 0xffff);
-        t1->iflags = (u_int16_t) (V1_ST_USED | V1_ST_MODIFIED);
+        t1->isize = (uint16_t) (stbuf.st_size & 0xffff);
+        t1->iflags = (uint16_t) (V1_ST_USED | V1_ST_MODIFIED);
         if (stbuf.st_size > 4095)
             t1->iflags |= V1_ST_LARGE;
         if (stbuf.st_mode & S_IFDIR)
@@ -477,7 +477,7 @@ void v1trap()
 
 static int v1trap_exec(void)
 {
-    u_int16_t cptr, cptr2;
+    uint16_t cptr, cptr2;
     char *buf, *name, *origpath;
 
     origpath = strdup((char *) &dspace[uarg1]);
@@ -549,10 +549,10 @@ static int v1open_dir(char *name)
 /* Given a time, work out the number of 1/60ths of seconds since
  * the start of that time's year
  */
-u_int32_t sectosixty(time_t tim)
+uint32_t sectosixty(time_t tim)
 {
     time_t epoch;
-    u_int32_t diff;
+    uint32_t diff;
     struct tm *T;
 
     T = gmtime(&tim);

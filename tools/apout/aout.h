@@ -1,7 +1,10 @@
 /* aout.h - parse and load the contents of a UNIX a.out file, for
  * several flavours of PDP-11 UNIX
  */
+
+#include <stdint.h>
 #include <unistd.h>
+
 #define EIGHT_K 8192
 
 /* UNIX magic numbers for the a.out header */
@@ -22,20 +25,20 @@
 
 /* a.out header for nearly all UNIX flavours */
 struct exec {
-    u_int16_t a_magic;  /* magic number */
-    u_int16_t a_text;   /* size of text segment */
-    u_int16_t a_data;   /* size of initialised data */
-    u_int16_t a_bss;    /* size of initialised bss */
-    u_int16_t a_syms;   /* size of symbol table */
-    u_int16_t a_entry;  /* entry point */
-    u_int16_t a_unused; /* unused */
-    u_int16_t a_flag;   /* relocation info stripped */
-    /* 16 bytes up to here */
+    uint16_t a_magic;  /* magic number */
+    uint16_t a_text;   /* size of text segment */
+    uint16_t a_data;   /* size of initialised data */
+    uint16_t a_bss;    /* size of initialised bss */
+    uint16_t a_syms;   /* size of symbol table */
+    uint16_t a_entry;  /* entry point */
+    uint16_t a_unused; /* unused */
+    uint16_t a_flag;   /* relocation info stripped */
+                       /* 16 bytes up to here */
 
     /* 2.11BSD overlay files have the following */
 #define NOVL 15
-    int16_t max_ovl;        /* maximum overlay size */
-    u_int16_t ov_siz[NOVL]; /* size of the i'th overlay */
+    int16_t max_ovl;       /* maximum overlay size */
+    uint16_t ov_siz[NOVL]; /* size of the i'th overlay */
     /* Note that if the file isn't a 2.11BSD overlay, we have to rewind to
      * undo the read of this section.
      */

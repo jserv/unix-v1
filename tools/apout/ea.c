@@ -5,7 +5,7 @@
 
 void load_ea(void)
 {
-    u_int16_t indirect;
+    uint16_t indirect;
 
     switch (DST_MODE) {
     case 0:
@@ -61,11 +61,11 @@ inline void push(void)
 
 void loadb_dst(void)
 {
-    u_int16_t addr, indirect;
+    uint16_t addr, indirect;
 
     switch (DST_MODE) {
     case 0:
-        dstbyte = (u_int8_t) (regs[DST_REG] & 0377);
+        dstbyte = (uint8_t) (regs[DST_REG] & 0377);
         return;
     case 1:
         addr = regs[DST_REG];
@@ -137,11 +137,11 @@ void loadb_dst(void)
 
 void loadb_src(void)
 {
-    u_int16_t addr, indirect;
+    uint16_t addr, indirect;
 
     switch (SRC_MODE) {
     case 0:
-        srcbyte = (u_int8_t) (regs[SRC_REG] & 0377);
+        srcbyte = (uint8_t) (regs[SRC_REG] & 0377);
         return;
     case 1:
         addr = regs[SRC_REG];
@@ -206,7 +206,7 @@ void loadb_src(void)
 
 void storeb_dst(void)
 {
-    u_int16_t addr, indirect;
+    uint16_t addr, indirect;
 
     switch (DST_MODE) {
     case 0:
@@ -274,7 +274,7 @@ inline void storeb_dst_2(void)
 
 void loadp_dst(void)
 {
-    u_int16_t addr, indirect;
+    uint16_t addr, indirect;
 
     switch (DST_MODE) {
     case 0:
@@ -321,7 +321,7 @@ void loadp_dst(void)
 
 void storep_dst(void)
 {
-    u_int16_t addr, indirect;
+    uint16_t addr, indirect;
 
     switch (DST_MODE) {
     case 0:
@@ -367,7 +367,7 @@ void storep_dst(void)
 
 void load_src(void)
 {
-    u_int16_t addr, indirect;
+    uint16_t addr, indirect;
 
     switch (SRC_MODE) {
     case 0:
@@ -430,7 +430,7 @@ void load_src(void)
 
 void store_dst(void)
 {
-    u_int16_t addr, indirect;
+    uint16_t addr, indirect;
 
     switch (DST_MODE) {
     case 0:
@@ -481,7 +481,7 @@ void store_dst(void)
 
 void load_dst(void)
 {
-    u_int16_t addr, indirect;
+    uint16_t addr, indirect;
 
     switch (DST_MODE) {
     case 0:

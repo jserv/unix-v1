@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include "defines.h"
 
-void eae_wr(u_int16_t data, u_int16_t PA, int32_t access);
+void eae_wr(uint16_t data, uint16_t PA, int32_t access);
 void set_SR(void);
 
 /* I/O dispatch routine, I/O addresses 177300 - 177316 */
@@ -34,7 +34,7 @@ static int32_t SC = 0; /* Shift counter */
 static int32_t SR;     /* Status register */
 
 /* Load a word from one of the KE11 registers */
-int16_t kell_word(u_int16_t addr)
+int16_t kell_word(uint16_t addr)
 {
     int16_t data;
     int pid;
@@ -75,7 +75,7 @@ int16_t kell_word(u_int16_t addr)
 }
 
 /* Load a byte from one of the KE11 registers */
-int8_t kell_byte(u_int16_t addr)
+int8_t kell_byte(uint16_t addr)
 {
     if (addr & 1)
         printf("Hmm, KE11 access on 0%o\n", addr);
@@ -83,18 +83,18 @@ int8_t kell_byte(u_int16_t addr)
 }
 
 /* Save a word to one of the KE11 registers */
-void kesl_word(u_int16_t addr, u_int16_t word)
+void kesl_word(uint16_t addr, uint16_t word)
 {
     eae_wr(word, addr, WRITEW);
 }
 
 /* Save a byte to one of the KE11 registers */
-void kesl_byte(u_int16_t addr, u_int8_t byte)
+void kesl_byte(uint16_t addr, uint8_t byte)
 {
     eae_wr(byte, addr, WRITEB);
 }
 
-void eae_wr(u_int16_t data, u_int16_t PA, int32_t access)
+void eae_wr(uint16_t data, uint16_t PA, int32_t access)
 {
     int32_t divisor, quotient, remainder;
     int32_t dividend, product;

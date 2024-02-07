@@ -13,7 +13,7 @@
         regs[PC] += (offset * 2); \
     }
 
-static u_int16_t offset;
+static uint16_t offset;
 
 void bne()
 {
@@ -74,7 +74,6 @@ void br()
 {
     do_branch();
 }
-
 
 /* blos() - Branch Lower or Same Instruction. */
 void blos()
@@ -172,7 +171,7 @@ void sob()
 /* mfps() - Move from Processor Status Instruction. */
 void mfps()
 {
-    srcbyte = (u_int8_t) 0;
+    srcbyte = (uint8_t) 0;
     if (CC_N)
         srcbyte |= CC_NBIT;
     if (CC_Z)
@@ -194,7 +193,7 @@ void mfps()
         } else {
             dstword = 0;
         }
-        dstword += (u_int16_t) srcbyte;
+        dstword += (uint16_t) srcbyte;
         store_dst();
     }
 }
@@ -220,7 +219,6 @@ void mfpi()
     push();
 }
 
-
 /* mtpi() - To From Previous Instruction Space Instruction. */
 void mtpi()
 {
@@ -231,10 +229,10 @@ void mtpi()
 /* ash() - Arithmetic Shift Instruction. */
 void ash()
 {
-    u_int16_t temp;
-    u_int16_t old;
-    u_int16_t sign;
-    u_int16_t count;
+    uint16_t temp;
+    uint16_t old;
+    uint16_t sign;
+    uint16_t count;
 
     temp = regs[SRC_REG];
     load_dst();
@@ -281,17 +279,16 @@ void ash()
     regs[SRC_REG] = temp;
 }
 
-
 /* mul() and divide() - Multiply and Divide Instructions.  These work on
  * signed values, and we'll do the same.  This may not be portable. */
 
 union s_u_word {
-    u_int16_t u_word;
+    uint16_t u_word;
     int16_t s_word;
 };
 
 union s_u_long {
-    u_int32_t u_long;
+    uint32_t u_long;
     int32_t s_long;
 };
 
@@ -307,8 +304,8 @@ void mul()
 
     tmp.s_long = ((int32_t) data1.s_word) * ((int32_t) data2.s_word);
 
-    regs[SRC_REG] = (u_int16_t) (tmp.u_long >> 16);
-    regs[(SRC_REG) | 1] = (u_int16_t) (tmp.u_long & 0177777);
+    regs[SRC_REG] = (uint16_t) (tmp.u_long >> 16);
+    regs[(SRC_REG) | 1] = (uint16_t) (tmp.u_long & 0177777);
 
     CLR_CC_ALL();
 
@@ -345,7 +342,7 @@ void divide()
     }
 
     eql.s_long = tmp.s_long / data2.s_word;
-    regs[SRC_REG] = (u_int16_t) eql.u_long & 0177777;
+    regs[SRC_REG] = (uint16_t) eql.u_long & 0177777;
 
     if (eql.u_long == 0)
         SET_CC_Z();
@@ -363,16 +360,16 @@ void divide()
         CLR_CC_N();
 
     eql.s_long = tmp.s_long % data2.s_word;
-    regs[(SRC_REG) | 1] = (u_int16_t) eql.u_long & 0177777;
+    regs[(SRC_REG) | 1] = (uint16_t) eql.u_long & 0177777;
 }
 
 /* ashc() - Arithmetic Shift Combined Instruction. */
 void ashc()
 {
-    u_int32_t temp;
-    u_int32_t old;
-    u_int32_t sign;
-    u_int16_t count;
+    uint32_t temp;
+    uint32_t old;
+    uint32_t sign;
+    uint16_t count;
 
     temp = regs[SRC_REG];
     temp <<= 16;
@@ -437,7 +434,7 @@ void ashc()
         SET_CC_V();
     }
 
-    regs[SRC_REG] = (u_int16_t) (temp >> 16);
+    regs[SRC_REG] = (uint16_t) (temp >> 16);
     regs[(SRC_REG) | 1] = LOW16(temp);
 }
 

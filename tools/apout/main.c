@@ -34,11 +34,11 @@ int main(int argc, char **argv)
 
     /* Ensure, before we start, that certain types are right */
     assert(sizeof(int8_t) == 1);
-    assert(sizeof(u_int8_t) == 1);
+    assert(sizeof(uint8_t) == 1);
     assert(sizeof(int16_t) == 2);
-    assert(sizeof(u_int16_t) == 2);
+    assert(sizeof(uint16_t) == 2);
     assert(sizeof(int32_t) == 4);
-    assert(sizeof(u_int32_t) == 4);
+    assert(sizeof(uint32_t) == 4);
 
     if (argc < 2)
         usage();

@@ -25,8 +25,8 @@
 /* Forward prototypes */
 static int trap_exec(int want_env);
 static int open_dir(char *name);
-static int trap_gtty(u_int16_t fd, u_int16_t ucnt);
-static int trap_stty(u_int16_t fd, u_int16_t ucnt);
+static int trap_gtty(uint16_t fd, uint16_t ucnt);
+static int trap_stty(uint16_t fd, uint16_t ucnt);
 static int v7signal(int sig, int val);
 static void fixv6time(time_t *t);
 
@@ -55,7 +55,7 @@ void v7trap()
 {
     int i, pid, pfd[2];
     int whence;
-    u_int16_t argbase;
+    uint16_t argbase;
     int trapnum;
     long larg;
     char *buf, *buf2;
@@ -322,7 +322,7 @@ void v7trap()
             t6->inl = stbuf.st_nlink;
             t6->iuid = stbuf.st_uid;
             t6->igid = stbuf.st_gid;
-            t6->isize = (u_int16_t) (stbuf.st_size & 0xffff);
+            t6->isize = (uint16_t) (stbuf.st_size & 0xffff);
             t6->isize0 = (u_int8_t) ((stbuf.st_size >> 16) & 0xff);
             /* Fix annoying bug in V5/V6 ctime() */
             fixv6time(&(stbuf.st_atime));
@@ -594,7 +594,7 @@ static int v7sig[] = {
 static int trap_exec(int want_env)
 {
     int i;
-    u_int16_t cptr, cptr2;
+    uint16_t cptr, cptr2;
     char *buf, *name, *origpath;
 
     origpath = strdup((char *) &dspace[uarg1]);
@@ -681,7 +681,7 @@ static int open_dir(char *name)
     return (i);
 }
 
-static int trap_gtty(u_int16_t fd, u_int16_t ucnt)
+static int trap_gtty(uint16_t fd, uint16_t ucnt)
 {
     struct tr_sgttyb *sgtb; /* used in GTTY/STTY */
     struct termios tios;    /* used in GTTY/STTY */
@@ -719,7 +719,7 @@ static int trap_gtty(u_int16_t fd, u_int16_t ucnt)
     return 0;
 }
 
-static int trap_stty(u_int16_t fd, u_int16_t ucnt)
+static int trap_stty(uint16_t fd, uint16_t ucnt)
 {
     struct tr_sgttyb *sgtb; /* used in GTTY/STTY */
     struct termios tios;    /* used in GTTY/STTY */

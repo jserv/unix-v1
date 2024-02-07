@@ -10,7 +10,7 @@
 #include "defines.h"
 
 struct spec_aout {
-    u_int32_t cksum;
+    uint32_t cksum;
     int environment;
 };
 
@@ -112,9 +112,9 @@ static struct spec_aout S[] = {
 };
 
 /* cptr points at the start of the a.out header */
-int special_magic(u_int16_t *cptr)
+int special_magic(uint16_t *cptr)
 {
-    u_int32_t cksum = 0;
+    uint32_t cksum = 0;
     int i;
     char *unix_version;
 

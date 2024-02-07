@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <signal.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,9 +70,9 @@
 typedef char int8_t;
 typedef short int16_t;
 typedef long int32_t;
-typedef unsigned char u_int8_t;
-typedef unsigned short u_int16_t;
-typedef unsigned long u_int32_t;
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+typedef unsigned long uint32_t;
 #endif
 
 /* Defines for -DSTREAM_BUFFERING */
@@ -97,12 +98,12 @@ typedef float FLOAT; /* For now, we use floats to do FP */
 #define MAX_ARGS 200       /* Max cmd-line args per process */
 
 /* Global variables. */
-extern u_int16_t regs[8]; /* general registers */
-extern u_int16_t ir;      /* current instruction register */
-extern int CC_N;          /* The processor status word is represented */
-extern int CC_Z;          /* by these four values. On some */
-extern int CC_V;          /* architectures, you may get a performance */
-extern int CC_C;          /* increase by changing the size of the vars */
+extern uint16_t regs[8]; /* general registers */
+extern uint16_t ir;      /* current instruction register */
+extern int CC_N;         /* The processor status word is represented */
+extern int CC_Z;         /* by these four values. On some */
+extern int CC_V;         /* architectures, you may get a performance */
+extern int CC_C;         /* increase by changing the size of the vars */
 
 extern FLOAT fregs[8]; /* FP registers */
 extern int FPC;        /* FP Status flags */
@@ -112,16 +113,16 @@ extern int FPV;
 extern int FPMODE;  /* 0 = float, 1 = doubles */
 extern int INTMODE; /* 0 = integers, 1 = longs */
 
-extern u_int16_t ea_addr; /* stored address for dest modifying insts */
-extern u_int8_t *ispace, *dspace;
-extern u_int16_t dwrite_base; /* Lowest addr where dspace writes can occur */
+extern uint16_t ea_addr; /* stored address for dest modifying insts */
+extern uint8_t *ispace, *dspace;
+extern uint16_t dwrite_base; /* Lowest addr where dspace writes can occur */
 
-extern u_int16_t dstword; /* These globals are used in the effective */
-extern u_int16_t srcword; /* address calculations, mainly to save */
-extern u_int16_t tmpword; /* parameter passing overheads in */
-extern u_int8_t dstbyte;  /* function calls */
-extern u_int8_t srcbyte;
-extern u_int8_t tmpbyte;
+extern uint16_t dstword; /* These globals are used in the effective */
+extern uint16_t srcword; /* address calculations, mainly to save */
+extern uint16_t tmpword; /* parameter passing overheads in */
+extern uint8_t dstbyte;  /* function calls */
+extern uint8_t srcbyte;
+extern uint8_t tmpbyte;
 
 /* The following array holds the FILE pointers that correspond to open file
  * descriptors.
@@ -147,8 +148,8 @@ extern int Binary; /* Type of binary this a.out is. One of: */
 #define IS_211BSD 211
 
 /* 2.11BSD overlay stuff */
-extern u_int32_t ov_changes; /* Number of overlay changes */
-extern u_int8_t current_ov;  /* Current overlay number */
+extern uint32_t ov_changes; /* Number of overlay changes */
+extern uint8_t current_ov;  /* Current overlay number */
 
 /* We keep a list of signals that are pending */
 struct our_siglist {
@@ -189,19 +190,19 @@ extern struct our_siglist *Sigtail; /* Tail of the list */
 #define SIGN_B 0200  /* sign bit (byte) */
 #define CARRY_B 0400 /* set if carry out (byte) */
 
-#define LOW16(data) (u_int16_t)((data) & 0177777) /* mask the lower 16 bits */
-#define LOW8(data) (u_int8_t)((data) & 0377)      /* mask the lower 8 bits */
+#define LOW16(data) (uint16_t)((data) &0177777) /* mask the lower 16 bits */
+#define LOW8(data) (uint8_t)((data) &0377)      /* mask the lower 8 bits */
 
 #define CHG_CC_N(d) \
-    if ((d) & SIGN) \
+    if ((d) &SIGN)  \
         SET_CC_N(); \
     else            \
         CLR_CC_N()
 
-#define CHGB_CC_N(d)  \
-    if ((d) & SIGN_B) \
-        SET_CC_N();   \
-    else              \
+#define CHGB_CC_N(d) \
+    if ((d) &SIGN_B) \
+        SET_CC_N();  \
+    else             \
         CLR_CC_N()
 
 #define CHG_CC_Z(d) \
@@ -216,22 +217,22 @@ extern struct our_siglist *Sigtail; /* Tail of the list */
     else             \
         SET_CC_Z()
 
-#define CHG_CC_C(d)  \
-    if ((d) & CARRY) \
-        SET_CC_C();  \
-    else             \
+#define CHG_CC_C(d) \
+    if ((d) &CARRY) \
+        SET_CC_C(); \
+    else            \
         CLR_CC_C()
 
 #define CHG_CC_IC(d) \
-    if ((d) & CARRY) \
+    if ((d) &CARRY)  \
         CLR_CC_C();  \
     else             \
         SET_CC_C()
 
-#define CHGB_CC_IC(d)  \
-    if ((d) & CARRY_B) \
-        CLR_CC_C();    \
-    else               \
+#define CHGB_CC_IC(d) \
+    if ((d) &CARRY_B) \
+        CLR_CC_C();   \
+    else              \
         SET_CC_C()
 
 #define CHG_CC_V(d1, d2, d3)                                          \
@@ -273,7 +274,7 @@ extern struct our_siglist *Sigtail; /* Tail of the list */
 /* Macros to read and write loctions in
  * main memory.
  */
-extern u_int16_t *adptr;
+extern uint16_t *adptr;
 
 #define copylong(to, from)   \
     buf = (char *) &(to);    \
@@ -285,33 +286,33 @@ extern u_int16_t *adptr;
 
 #ifndef EMUV1
 /* lli_word() - Load a word from the given ispace logical address. */
-#define lli_word(addr, word)                   \
-    {                                          \
-        adptr = (u_int16_t *) &(ispace[addr]); \
-        word = *adptr;                         \
+#define lli_word(addr, word)                  \
+    {                                         \
+        adptr = (uint16_t *) &(ispace[addr]); \
+        word = *adptr;                        \
     }
 
 /* ll_word() - Load a word from the given logical address. */
-#define ll_word(addr, word)                    \
-    {                                          \
-        adptr = (u_int16_t *) &(dspace[addr]); \
-        word = *adptr;                         \
+#define ll_word(addr, word)                   \
+    {                                         \
+        adptr = (uint16_t *) &(dspace[addr]); \
+        word = *adptr;                        \
     }
 
 /* sl_word() - Store a word at the given logical address. */
 #ifdef WRITEBASE
-#define sl_word(addr, word)                    \
-    {                                          \
-        if ((u_int16_t) addr < dwrite_base)    \
-            seg_fault();                       \
-        adptr = (u_int16_t *) &(dspace[addr]); \
-        *adptr = word;                         \
+#define sl_word(addr, word)                   \
+    {                                         \
+        if ((uint16_t) addr < dwrite_base)    \
+            seg_fault();                      \
+        adptr = (uint16_t *) &(dspace[addr]); \
+        *adptr = word;                        \
     }
 #else
-#define sl_word(addr, word)                    \
-    {                                          \
-        adptr = (u_int16_t *) &(dspace[addr]); \
-        *adptr = word;                         \
+#define sl_word(addr, word)                   \
+    {                                         \
+        adptr = (uint16_t *) &(dspace[addr]); \
+        *adptr = word;                        \
     }
 #endif
 
@@ -348,7 +349,7 @@ extern u_int16_t *adptr;
         if ((Binary < IS_V3) && (addr >= KE11LO) && (addr <= KE11HI)) { \
             word = kell_word(addr);                                     \
         } else {                                                        \
-            adptr = (u_int16_t *) &(ispace[addr]);                      \
+            adptr = (uint16_t *) &(ispace[addr]);                       \
             word = *adptr;                                              \
         }                                                               \
     }
@@ -359,7 +360,7 @@ extern u_int16_t *adptr;
         if ((Binary < IS_V3) && (addr >= KE11LO) && (addr <= KE11HI)) { \
             word = kell_word(addr);                                     \
         } else {                                                        \
-            adptr = (u_int16_t *) &(dspace[addr]);                      \
+            adptr = (uint16_t *) &(dspace[addr]);                       \
             word = *adptr;                                              \
         }                                                               \
     }
@@ -368,12 +369,12 @@ extern u_int16_t *adptr;
 #ifdef WRITEBASE
 #define sl_word(addr, word)                                             \
     {                                                                   \
-        if ((u_int16_t) addr < dwrite_base)                             \
+        if ((uint16_t) addr < dwrite_base)                              \
             seg_fault();                                                \
         if ((Binary < IS_V3) && (addr >= KE11LO) && (addr <= KE11HI)) { \
             kesl_word(addr, word);                                      \
         } else {                                                        \
-            adptr = (u_int16_t *) &(dspace[addr]);                      \
+            adptr = (uint16_t *) &(dspace[addr]);                       \
             *adptr = word;                                              \
         }                                                               \
     }
@@ -383,7 +384,7 @@ extern u_int16_t *adptr;
         if ((Binary < IS_V3) && (addr >= KE11LO) && (addr <= KE11HI)) { \
             kesl_word(addr, word);                                      \
         } else {                                                        \
-            adptr = (u_int16_t *) &(dspace[addr]);                      \
+            adptr = (uint16_t *) &(dspace[addr]);                       \
             *adptr = word;                                              \
         }                                                               \
     }
@@ -549,7 +550,7 @@ char *xlate_filename(char *name);
 void set_apout_root(char *dirname);
 
 /* magic.c */
-int special_magic(u_int16_t *cptr);
+int special_magic(uint16_t *cptr);
 
 /* single.c */
 void adc(void);
@@ -602,9 +603,9 @@ int do_sigaction(int sig, int a, int oa);
 
 /* ke11a.c */
 #ifdef EMUV1
-int16_t kell_word(u_int16_t addr);
-void kesl_word(u_int16_t addr, u_int16_t word);
-int8_t kell_byte(u_int16_t addr);
-void kesl_byte(u_int16_t addr, u_int8_t byte);
+int16_t kell_word(uint16_t addr);
+void kesl_word(uint16_t addr, uint16_t word);
+int8_t kell_byte(uint16_t addr);
+void kesl_byte(uint16_t addr, uint8_t byte);
 void set_SR(void);
 #endif

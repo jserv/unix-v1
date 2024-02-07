@@ -50,7 +50,7 @@ static char *buf, *buf2; /* for copylong */
 static void from11float(FLOAT *out, pdpfloat *in)
 {
     int32_t exponent;
-    u_int32_t fraction;
+    uint32_t fraction;
     FLOAT z;
 
     exponent = in->exp - 128 - 24; /* 24 so as to shift the radix point left */
@@ -67,7 +67,7 @@ static void from11float(FLOAT *out, pdpfloat *in)
 static void to11float(FLOAT *in, pdpfloat *out)
 {
     int32_t exponent = 129;
-    u_int32_t fraction;
+    uint32_t fraction;
     FLOAT infloat = *in;
 
     if (infloat < 0.0) {
@@ -102,16 +102,16 @@ static void to11float(FLOAT *in, pdpfloat *out)
 }
 
 static struct {
-    u_int16_t lo;
-    u_int16_t hi;
+    uint16_t lo;
+    uint16_t hi;
 } intpair;
 
 /* Load (and convert if necessary) the float described by the source */
 /* address into Srcflt. */
 static void load_flt(void)
 {
-    u_int16_t indirect, addr;
-    u_int16_t *intptr;
+    uint16_t indirect, addr;
+    uint16_t *intptr;
 
     switch (DST_MODE) {
     case 0:
@@ -120,7 +120,7 @@ static void load_flt(void)
         return;
     case 1:
         if (DST_REG == PC) {
-            intptr = (u_int16_t *) &ispace[regs[DST_REG]];
+            intptr = (uint16_t *) &ispace[regs[DST_REG]];
             intpair.lo = *intptr;
             intpair.hi = 0;
             fladdr = (pdpfloat *) &intpair;
@@ -130,7 +130,7 @@ static void load_flt(void)
         return;
     case 2:
         if (DST_REG == PC) {
-            intptr = (u_int16_t *) &ispace[regs[DST_REG]];
+            intptr = (uint16_t *) &ispace[regs[DST_REG]];
             intpair.lo = *intptr;
             intpair.hi = 0;
             fladdr = (pdpfloat *) &intpair;
@@ -148,7 +148,7 @@ static void load_flt(void)
     case 3:
         ll_word(regs[DST_REG], indirect);
         if (DST_REG == PC) {
-            intptr = (u_int16_t *) &ispace[indirect];
+            intptr = (uint16_t *) &ispace[indirect];
             intpair.lo = *intptr;
             intpair.hi = 0;
             fladdr = (pdpfloat *) &intpair;
@@ -203,8 +203,8 @@ static void load_flt(void)
  * destination address */
 static void save_flt(void)
 {
-    u_int16_t indirect;
-    u_int16_t addr;
+    uint16_t indirect;
+    uint16_t addr;
     pdpfloat *fladdr;
 
     switch (DST_MODE) {
@@ -273,29 +273,29 @@ static void save_flt(void)
 }
 
 /* lli_long() - Load a long from the given ispace logical address. */
-#define lli_long(addr, word)                   \
-    {                                          \
-        adptr = (u_int16_t *) &(ispace[addr]); \
-        copylong(word, *adptr);                \
+#define lli_long(addr, word)                  \
+    {                                         \
+        adptr = (uint16_t *) &(ispace[addr]); \
+        copylong(word, *adptr);               \
     }
 
 /* ll_long() - Load a long from the given logical address. */
-#define ll_long(addr, word)                    \
-    {                                          \
-        adptr = (u_int16_t *) &(dspace[addr]); \
-        copylong(word, *adptr);                \
+#define ll_long(addr, word)                   \
+    {                                         \
+        adptr = (uint16_t *) &(dspace[addr]); \
+        copylong(word, *adptr);               \
     }
 
 /* sl_long() - Store a long from the given logical address. */
-#define sl_long(addr, word)                    \
-    {                                          \
-        adptr = (u_int16_t *) &(dspace[addr]); \
-        copylong(*adptr, word);                \
+#define sl_long(addr, word)                   \
+    {                                         \
+        adptr = (uint16_t *) &(dspace[addr]); \
+        copylong(*adptr, word);               \
     }
 
 static void load_long(void)
 {
-    u_int16_t addr, indirect;
+    uint16_t addr, indirect;
 
     switch (DST_MODE) {
     case 0:
@@ -358,7 +358,7 @@ static void load_long(void)
 
 static void store_long(void)
 {
-    u_int16_t addr, indirect;
+    uint16_t addr, indirect;
 
     switch (DST_MODE) {
     case 0:
@@ -526,7 +526,6 @@ void negf()
     else
         FPN = 0;
 }
-
 
 void absf()
 {
@@ -731,8 +730,7 @@ void ldcdf()
 }
 
 void stst()
-{
-    /* For now */
+{ /* For now */
 }
 
 void ldexpp()
