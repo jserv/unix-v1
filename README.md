@@ -36,8 +36,8 @@ memory image. This image is then placed into the images directory.
 
 Finally, the `make` will build the `rf0.dsk`, `rk0.dsk` and `tape` images and
 install these in the `images` directory. You can also do a `make clean` to clean
-out the `images/` and `build/` directories. A `make distclean` will clean out the
-`images/`, `build/`  and `tools/` directories accordingly.
+out the `images` and `build` directories. A `make distclean` will clean out the
+`images`, `build`  and `tools` directories accordingly.
 
 ## Running 1st Edition UNIX
 1. Execute `make run` or `./simh.cfg`, and you should see this:
@@ -98,22 +98,34 @@ of UNIX. The manuals from the 2nd Edition may also be useful:
 <http://www.bitsavers.org/pdf/att/unix/Early_UNIX/Unix_2nd_Edition_Manual_Jun72.pdf>.
 
 ## Repository Layout
-* `pages/`
+* `pages`
     - OCR'd pages from the [Preliminary Release of UNIX Implementation Document](docs/PreliminaryUnixImplementationDocument_Jun72.pdf).
-* `patches/`
-    - patches to rebuilt/ files to get kernel to run
-* `fs/`
+* `patches`
+    - patches to rebuilt files to get kernel to run
+* `fs`
     - userland binaries and files, used to make rf0.dsk and rk0.dsk
-* `src/`
+* `src`
     - source code for userland: there is not much available
-* `tools/`
+* `tools`
     - tools and scripts to build the kernel and filesystem
-* `build/`
+* `build`
     - build area: patched kernel files, patched filesystems
-* `images/`
+* `images`
     - final disk and tape images to be used by the SIMH simulator
-* `notes/`
+* `notes`
     - notes on the work done to get 1e UNIX to run again
+
+## License
+
+In 2002, Caldera International made Unix V1 through V7 for PDP-11 and Unix 32V
+for VAX available as free and open source software, adopting a permissive
+BSD-style license. Consequently, any work derived from Unix V1, as well as
+portions of V2 and V3, falls under this same BSD-style licensing.
+
+Use of this repository is governed by a BSD-style license that can be found in
+the [LICENSE](LICENSE) file.
+
+Check the [CREDITS](CREDITS) file to see who participated in the restoration.
 
 ## Related Projects
 * [7th Edition Unix at 40](https://2019.eurobsdcon.org/slides/7th%20Edition%20Unix%20at%2040%20-%20Warner%20Losh.pdf) / [video](https://youtu.be/FTlzaDgzPY8)
