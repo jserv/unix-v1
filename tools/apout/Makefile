@@ -1,45 +1,41 @@
 # Makefile for Apout PDP-11 application emulator
 #
-# $Revision: 1.31 $
-# $Date: 2008/05/19 13:42:39 $
-#
 # You will need gcc if you choose the optimised compile below
-CC=gcc
+CC ?= gcc
 
-# Set the CFLAGS, LDFLAGS for speed or debugging. If you don't want 2.11BSD
-# emulation, then remove the -DEMU211 flag.
+# If you don't want 2.11BSD emulation, then remove the -DEMU211 flag.
 # Set up the LIBS if required for your system
 #
-# These flags for doing debugging
-CFLAGS= -Wall -g -DEMU211 -DEMUV1 -DNATIVES -DRUN_V1_RAW \
-	-DDEBUG -DZERO_MEMORY -DWRITEBASE
-LDFLAGS= -g
+# These flags should be fine for most cases
+APOUT_OPTIONS ?= -DEMU211 -DEMUV1 -DNATIVES
 
-# These flags for speed
-#CFLAGS= -DEMU211 -DNATIVES -DINLINE=inline -O2 -Winline -Wall \
-#	-finline-functions -fomit-frame-pointer
-#LDFLAGS=
+# Assemble CFLAGS
+CFLAGS ?= -O2 -DINLINE=inline -finline-functions -fomit-frame-pointer
+CFLAGS +=-Winline -Wunused-result # silence warnings
+CFLAGS += $(APOUT_OPTIONS)
 
 # Any extra libraries required
 LIBS= -lm
 
 # Install destinations
-MANDIR=/usr/local/man/man1
-BINDIR=/usr/local/bin
+PREFIX ?=/usr/local
+MANDIR = $(PREFIX)/man/man1
+BINDIR = $(PREFIX)/bin
 
-VERSION= apout2.3beta1
-SRCS=	cpu.c aout.c aout.h branch.c double.c ea.c itab.c main.c ke11a.c \
+VERSION = apout2.3beta1
+SRCS = \
+	cpu.c aout.c aout.h branch.c double.c ea.c itab.c main.c ke11a.c \
 	single.c fp.c v7trap.c bsdtrap.c defines.h v7trap.h debug.c \
-	bsdtrap.h bsd_ioctl.c bsd_signal.c magic.c v1trap.c v1trap.h \
-	apout.1 apout.0 README COPYRIGHT CHANGES LIMITATIONS TODO Makefile
-OBJS=	aout.o branch.o bsd_ioctl.o bsd_signal.o bsdtrap.o cpu.o debug.o \
+	bsdtrap.h bsd_ioctl.c bsd_signal.c magic.c v1trap.c v1trap.h
+OBJS = \
+	aout.o branch.o bsd_ioctl.o bsd_signal.o bsdtrap.o cpu.o debug.o \
 	double.o ea.o fp.o itab.o ke11a.o magic.o main.o single.o v1trap.o \
 	v7trap.o
 
 apout: $(OBJS)
-	cc $(LDFLAGS) $(OBJS) -o apout $(LIBS)
+	$(CC) $(LDFLAGS) $(OBJS) -o apout $(LIBS)
 
-install: apout
+install: apout apout.1
 	cp apout $(BINDIR)
 	chmod 755 $(BINDIR)/apout
 	cp apout.1 $(MANDIR)
@@ -50,6 +46,9 @@ clean:
 
 apout.0: apout.1
 	nroff -man apout.1 > apout.0
+
+indent: $(SRCS)
+	astyle --style=kr $(SRCS)
 
 disttar: clean apout.0
 	- mkdir $(VERSION)
