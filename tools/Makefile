@@ -4,7 +4,7 @@ all: pdp11 mkfs ml apout/apout
 
 pdp11: simh/makefile
 	$(MAKE) -C simh pdp11
-	ln -s simh/BIN/pdp11 .
+	ln -sf simh/BIN/pdp11 .
 
 simh/makefile:
 	git submodule update --init
