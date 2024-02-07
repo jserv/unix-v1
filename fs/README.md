@@ -1,31 +1,26 @@
-The directories root/ and usr/ contain the files from the "s2-bits tape", 
+# filesystem
+
+The directories `root` and `usr` contain the files from the "s2-bits tape",
 which Dennis Ritchie extracted from an old DECtape at Bell Labs, which is
-available here:
+available here: <https://minnie.tuhs.org/TUHS/Archive/Distributions/Research/1972_stuff/>
 
-     http://www.tuhs.org/Archive/PDP-11/Distributions/research/1972_stuff/
+Dennis notes that "s2-bits is not source, but a dump of (parts of) `/bin`,
+`/etc`, `/usr/lib`, and bits of a few other directories".
 
-Dennis notes that "s2-bits is not source, but a dump of (parts of) /bin,
-/etc, /usr/lib, and bits of a few other directories".
-
-
-Layout
-------
+## Layout
 The files on the "s2-bits tape" are split into two directories:
-
-  root - files from s2.tar.gz, excluding the usr directory, used
-         to populate the rf0 filesystem.
-  usr  - files from s2.tar.gz under the usr directory, used to populate
-         the rk0 filesystem.
+* `root` - files from `s2.tar.gz`, excluding the usr directory, used to populate
+  the rf0 filesystem.
+* `usr` - files from `s2.tar.gz` under the usr directory, used to populate the
+  rk0 filesystem.
 
 Binaries which have been built recently while reconstructing the system
-are in the new/ directory, and include:
+are in the `new` directory, and include:
 
-  new/etc/init - built from jun72 printout sources for init.s
-                 with modifications to spawn getty on tty8 (console) only.
+`new/etc/init` - built from jun72 printout sources for `init.s` with
+modifications to spawn getty on tty8 (console) only.
 
-
-File Permissions
-----------------
+## File Permissions
 The following list gives details of all the files in the s2-bits tap-format
 archive. The first columns are a direct copy of a listing done with the
 emulated 1st Edition tap(1) from the s2-bits tape.
@@ -35,7 +30,7 @@ as recorded in the archive: I captured the smdate(2) argument in Apout
 as tap(1) tried to extract the archive. This is in 1/60th second units.
 
 The list is sorted by the TAP DATE column.
-
+```
 MODE  UID SIZE  TAPA    DATE     NAME                 TAP DATE
 ===============================================================
 -rwr-  0 16448  538 Jan  1 00:33 /core                  121912 
@@ -133,3 +128,4 @@ urwr-  0  3678   34 Dec 31 04:08 /bin/tap               1887871165
 -rw--  1   221  239 Feb  6 14:35 /etc/passwd            2081934621 
 -rwr-  1    70  238 Feb  6 14:38 /etc/uids              2081948231 
 xrwr-  1   424  231 Feb  6 14:50 /etc/init              2081988977 
+```
