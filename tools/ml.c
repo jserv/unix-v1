@@ -1,7 +1,7 @@
 /*
  * Quick hack to read old unix a.out files and make a simh "load file".
  *
- * Copyright (C0 2008 Brad Parker <brad@heeltoe.com>
+ * Copyright (C) 2008 Brad Parker <brad@heeltoe.com>
  */
 
 #include <fcntl.h>
