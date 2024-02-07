@@ -17,8 +17,6 @@ following notice.
  * purpose.  It is provided "as is" without expressed or implied warranty.
  */
 
-------
-
 The parts of Apout that deal with PDP-11 instruction emulation are derived
 from the PDP-11 simulator written by Eric A. Edwards, and are protected by
 the following notice.
