@@ -1,11 +1,13 @@
 /*
  * bsd_ioctl.c - Deal with 2.11BSD ioctl system calls.
  */
+
 #ifdef EMU211
 #include <sys/ioctl.h>
 #include <termios.h>
 #include "bsdtrap.h"
 #include "defines.h"
+
 #ifdef __linux__
 #include <linux/sockios.h> /* FIOSETOWN */
 #endif
@@ -97,11 +99,10 @@ static int trap_settermios(uint16_t fd, uint32_t type, uint16_t ucnt);
 int trap_ioctl()
 {
     int i, val;
-    long larg1;
     int16_t *shortptr;
     struct winsize *winptr;
 
-    larg1 = (sarg2 << 16) | uarg3;
+    long larg1 = (sarg2 << 16) | uarg3;
     switch (larg1) {
     case TR_TIOCGETP:
     case TR_TIOCGETC:
@@ -167,7 +168,7 @@ int trap_ioctl()
     default:
         i = 0;
     }
-    return (i);
+    return i;
 }
 
 /* Convert from termios to old sgttyb structure */
@@ -226,6 +227,7 @@ static void to_sgttyb(struct tr_sgttyb *sgtb, struct termios *tios)
         sgtb->sg_ispeed = TR_B0;
         break;
     }
+
     switch (tios->c_ospeed) {
     case B0:
         sgtb->sg_ospeed = TR_B0;
@@ -279,6 +281,7 @@ static void to_sgttyb(struct tr_sgttyb *sgtb, struct termios *tios)
         sgtb->sg_ospeed = TR_B0;
         break;
     }
+
     sgtb->sg_erase = tios->c_cc[VERASE];
     sgtb->sg_kill = tios->c_cc[VKILL];
     sgtb->sg_flags = 0;
@@ -359,6 +362,7 @@ static void to_termios(struct tr_sgttyb *sgtb, struct termios *tios)
         tios->c_ispeed = B0;
         break;
     }
+
     switch (sgtb->sg_ospeed) {
     case TR_B0:
         tios->c_ospeed = B0;
@@ -412,6 +416,7 @@ static void to_termios(struct tr_sgttyb *sgtb, struct termios *tios)
         tios->c_ospeed = B0;
         break;
     }
+
     tios->c_cc[VERASE] = sgtb->sg_erase;
     tios->c_cc[VKILL] = sgtb->sg_kill;
 
@@ -465,6 +470,7 @@ static void to_tchars(struct tr_tchars *tc,
         tc->t_eofc = tios->c_cc[VEOF];
         tc->t_brkc = tios->c_cc[VEOL];
     }
+
     if (ltc) {
         ltc->t_suspc = tios->c_cc[VSUSP];
         ltc->t_dsuspc = tios->c_cc[VDSUSP];
@@ -488,6 +494,7 @@ static void tc_to_tchars(struct tr_tchars *tc,
         tios->c_cc[VEOF] = tc->t_eofc;
         tios->c_cc[VEOL] = tc->t_brkc;
     }
+
     if (ltc) {
         tios->c_cc[VSUSP] = ltc->t_suspc;
         tios->c_cc[VDSUSP] = ltc->t_dsuspc;
@@ -505,11 +512,11 @@ static int trap_gettermios(uint16_t fd, uint32_t type, uint16_t ucnt)
     struct tr_sgttyb *sgtb;
     struct tr_tchars *tc;
     struct tr_ltchars *ltc;
-    int i;
 
     if (ucnt == 0)
         return -1;
-    i = tcgetattr(fd, &tios);
+
+    int i = tcgetattr(fd, &tios);
     if (i == -1)
         return i;
     CLR_CC_C();
@@ -546,27 +553,28 @@ static int trap_settermios(uint16_t fd, uint32_t type, uint16_t ucnt)
     i = tcgetattr(fd, &tios);
     if (i == -1)
         return i;
+
     switch (type) {
     case TR_TIOCSETP:
         sgtb = (struct tr_sgttyb *) &dspace[ucnt];
         to_termios(sgtb, &tios);
         i = tcsetattr(fd, TCSANOW, &tios);
-        return (i);
+        return i;
     case TR_TIOCSETN:
         sgtb = (struct tr_sgttyb *) &dspace[ucnt];
         to_termios(sgtb, &tios);
         i = tcsetattr(fd, TCSADRAIN, &tios);
-        return (i);
+        return i;
     case TR_TIOCSETC:
         tc = (struct tr_tchars *) &dspace[ucnt];
         tc_to_tchars(tc, NULL, &tios);
         i = tcsetattr(fd, TCSANOW, &tios);
-        return (i);
+        return i;
     case TR_TIOCSLTC:
         ltc = (struct tr_ltchars *) &dspace[ucnt];
         tc_to_tchars(NULL, ltc, &tios);
         i = tcsetattr(fd, TCSANOW, &tios);
-        return (i);
+        return i;
     }
     /* Unknown type, should never get here */
     return -1;

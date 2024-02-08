@@ -8,10 +8,11 @@
  */
 
 #include <signal.h>
+
 #include "bsdtrap.h"
 #include "defines.h"
 
-#define NBSDSIG 32
+#define N_BSDSIG 31
 
 #define BSDSIGHUP 1     /* hangup */
 #define BSDSIGINT 2     /* interrupt */
@@ -74,12 +75,12 @@ static int bsdsig[] = {
 /* We keep a set of struct sigactions
  * for each 2.11BSD signal
  */
-struct bsd_sigaction Sigact[NBSDSIG];
+struct bsd_sigaction Sigact[N_BSDSIG];
 
 /* Set all signals to their default value */
 void set_bsdsig_dfl(void)
 {
-    for (int i = 0; i < NBSDSIG; i++) {
+    for (int i = 0; i < N_BSDSIG; i++) {
         if (bsdsig[i])
             signal(bsdsig[i], SIG_DFL);
         Sigact[i].sig_handler = BSDSIG_DFL;
@@ -89,15 +90,14 @@ void set_bsdsig_dfl(void)
 
 int do_sigaction(int sig, int a, int oa)
 {
-    int i;
-    struct bsd_sigaction *act, *oact;
+    struct bsd_sigaction *act;
     struct sigaction ouraction;
 
-    if ((sig < 0) || (sig >= NBSDSIG))
+    if ((sig < 0) || (sig >= N_BSDSIG))
         return (EINVAL);
 
     if (oa) {
-        oact = (struct bsd_sigaction *) &dspace[oa];
+        struct bsd_sigaction *oact = (struct bsd_sigaction *) &dspace[oa];
         memcpy(oact, &Sigact[sig], sizeof(struct bsd_sigaction));
     }
 
@@ -106,8 +106,9 @@ int do_sigaction(int sig, int a, int oa)
 
         /* If required, map mask here */
         /* Currently, the assumption is a 1-1 match */
+
         sigemptyset(&(ouraction.sa_mask));
-        for (i = 1; i < NBSDSIG; i++) {
+        for (int i = 1; i < N_BSDSIG; i++) {
             if bsdsigismember (&(act->sa_mask), i)
                 sigaddset(&(ouraction.sa_mask), i);
         }
@@ -116,14 +117,14 @@ int do_sigaction(int sig, int a, int oa)
         ouraction.sa_handler = sigcatcher;
     }
 
-    i = sigaction(bsdsig[sig], &ouraction, NULL);
+    int i = sigaction(bsdsig[sig], &ouraction, NULL);
     if (i == -1)
-        return (i);
+        return i;
 
     /* Else save the new sigaction */
     act = (struct bsd_sigaction *) &dspace[a];
     memcpy(&Sigact[sig], act, sizeof(struct bsd_sigaction));
-    return (i);
+    return i;
 }
 
 /* For now, the rest commented out. One day I might
@@ -135,13 +136,12 @@ int (*signal()) ();
 
 typedef unsigned long sigset_t;
 
-
 /*
  * Flags for sigprocmask:
  */
-#define BSDSIG_BLOCK 1                     /* block specified signal set */
-#define BSDSIG_UNBLOCK 2                   /* unblock specified signal set */
-#define BSDSIG_SETMASK 3                   /* set specified signal set */
+#define BSDSIG_BLOCK 1                       /* block specified signal set */
+#define BSDSIG_UNBLOCK 2                     /* unblock specified signal set */
+#define BSDSIG_SETMASK 3                     /* set specified signal set */
 
 typedef int (*sig_t) ();	/* type of signal function */
 
@@ -153,8 +153,8 @@ struct sigaltstack {
     int ss_size;		/* signal stack length */
     int ss_flags;		/* SA_DISABLE and/or SA_ONSTACK */
 };
-#define MINBSDSIGSTKSZ 128                 /* minimum allowable stack */
-#define BSDSIGSTKSZ (MINBSDSIGSTKSZ + 384) /* recommended stack size */
+#define MIN_BSDSIG_STKSZ 128                 /* minimum allowable stack */
+#define BSDSIGSTKSZ (MIN_BSDSIG_STKSZ + 384) /* recommended stack size */
 
 /*
  * 4.3 compatibility:
@@ -165,9 +165,9 @@ struct sigvec {
     long sv_mask;		/* signal mask to apply */
     int sv_flags;		/* see signal options below */
 };
-#define SV_ONSTACK SA_ONSTACK              /* take signal on signal stack */
-#define SV_INTERRUPT SA_RESTART            /* same bit, opposite sense */
-#define sv_onstack sv_flags                /* isn't compatibility wonderful! */
+#define SV_ONSTACK SA_ONSTACK                /* take signal on signal stack */
+#define SV_INTERRUPT SA_RESTART              /* same bit, opposite sense */
+#define sv_onstack sv_flags /* isn't compatibility wonderful! */
 
 /*
  * 4.3 compatibility:
